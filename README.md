@@ -1,4 +1,4 @@
-![HighTeach Logo](./HighTeach_logo.jpeg)
+![HighTeach Logo](static/images/HighTeach_logo.jpeg)
 
 # HighTeach
 
