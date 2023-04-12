@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import datetime
 # All the comments are to be changed after the PR merge of User and Teacher_course models
 # from Teacher_course.review import Teacher_course
 
