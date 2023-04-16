@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
+    'user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'user.User'
 
 WSGI_APPLICATION = 'HighTeach.wsgi.application'
 
