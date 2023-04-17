@@ -5,9 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
+packaging = "==21.3"
 
 [dev-packages]
 flake8 = "*"
+pytest = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.9"
