@@ -1,6 +1,8 @@
 import pytest
 from study_group.models import GroupMember
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
+from django.core.exceptions import ValidationError
 
 
 @pytest.mark.django_db
@@ -30,5 +32,27 @@ class TestStudyGroup:
 
         persist_group.join_group(persist_user)
         persist_group.join_group(persist_second_user)
-        print(set(persist_group.get_all_group_members()))
         assert set([persist_user, persist_second_user]) == set(persist_group.get_all_group_members())
+
+    def test_is_user_in_group(self, persist_group, persist_user):
+        assert not persist_group.is_user_in_group(persist_user)
+        persist_group.join_group(persist_user)
+        assert persist_group.is_user_in_group(persist_user)
+
+    def test_join_group_already_in(self, persist_group, persist_user):
+        persist_group.join_group(persist_user)
+
+        with pytest.raises(ValueError):
+            persist_group.join_group(persist_user)
+
+    @pytest.mark.parametrize("negative_capacity", [-2])
+    def test_negative_capacity(self, new_group, negative_capacity):
+        new_group.capacity = negative_capacity
+        with pytest.raises(IntegrityError):
+            new_group.save()
+
+    @pytest.mark.parametrize("over_char_limit", ["Hippopotomonstrosesquippedaliophobia Support Group"])
+    def test_field_over_char_limit(self, persist_group, over_char_limit):
+        persist_group.field = over_char_limit
+        with pytest.raises(ValidationError):
+            persist_group.save()
