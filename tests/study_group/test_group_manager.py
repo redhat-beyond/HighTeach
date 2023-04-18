@@ -2,6 +2,7 @@ import pytest
 from study_group.models import StudyGroup
 from django.contrib.auth.models import User
 
+
 @pytest.mark.django_db
 class TestStudyGroupManager:
     def test_get_all_non_full_groups(self, persist_group, persist_second_group):
@@ -12,12 +13,15 @@ class TestStudyGroupManager:
         assert persist_group not in result
         assert persist_second_group in result
 
-    @pytest.mark.parametrize("keyword, expected",
-                             [("this keyword should not exist", []),
-                              ("math", ["persist_group"]),
-                              ("guitar", ["persist_second_group"]),
-                              ("group", ["persist_group", "persist_second_group"])]
-                             )
-    def test_search_group_by_keyword(self, keyword, expected, request):
-        expected = request.getfixturevalue(expected)
-        assert list(StudyGroup.objects.search_group_by_keyword(keyword)) == list(expected)
+    def test_search_group_by_keyword(self, persist_group, persist_second_group):
+        empty = StudyGroup.objects.search_group_by_keyword("this keyword should not exist")
+        assert not empty
+
+        math_keyword_set = StudyGroup.objects.search_group_by_keyword("cs")
+        assert list(math_keyword_set) == [persist_group]
+
+        guitar_keyword_set = StudyGroup.objects.search_group_by_keyword("guitar")
+        assert list(guitar_keyword_set) == [persist_second_group]
+
+        groups_keyword_set = StudyGroup.objects.search_group_by_keyword("fixture")
+        assert set(groups_keyword_set) == set([persist_group, persist_second_group])

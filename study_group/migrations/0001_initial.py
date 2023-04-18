@@ -21,15 +21,18 @@ class Migration(migrations.Migration):
                 ('field', models.CharField(max_length=30)),
                 ('group_description', models.TextField()),
                 ('capacity', models.PositiveIntegerField()),
-                ('group_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('group_owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                  to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='GroupMember',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('group_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='group_members', to='study_group.studygroup')),
-                ('private_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('group_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                               related_name='group_members', to='study_group.studygroup')),
+                ('private_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                 to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]
