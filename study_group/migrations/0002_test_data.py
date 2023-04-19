@@ -41,6 +41,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('study_group', '0001_initial'),
+        ('users', '0002_profile_bio_profile_profession'),
     ]
 
     operations = [
