@@ -84,6 +84,10 @@ class TeacherCourses(models.Model):
         choices=Category,
     )
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     def get_experience(self):
         # Function for display in Admin
         return self.Experience.choices[int(self.years_of_experience)][1]
