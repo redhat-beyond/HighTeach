@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 
 Category = [
     ('BUSINESS_AND_MANAGEMENT', 'Business & Management'),
@@ -117,3 +118,56 @@ class Review(models.Model):
     content = models.TextField(blank=True)
     date = models.DateField(auto_now_add=True)
     objects = ReviewManager()
+
+
+class StudentCoursesManager(models.Manager):
+
+    def get_teacher_pending(self, id: int):
+        return TeacherCourses.objects.get_teacher_courses(id).values("course_id").intersection(
+            self.filter(status=Status.PENDING).values("teacher_course_id")).values_list(flat=True)
+
+    def get_student_pending(self, id: int):
+        return self.filter(student_id=id, status=Status.PENDING)
+
+    def get_student_courses(self, id: int):
+        return self.filter(student_id=id)
+
+
+class Status(models.TextChoices):
+    PENDING = 'Pending'
+    CONFIRMED = 'Confirmed'
+
+
+class StudentCourses(models.Model):
+    student_course_id = models.BigAutoField(primary_key=True)
+    student_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    teacher_course_id = models.ForeignKey(TeacherCourses, on_delete=models.CASCADE)
+    request_date = models.DateTimeField(auto_now_add=True)
+    objects = StudentCoursesManager()
+
+    status = models.CharField(
+        max_length=30,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+
+    def change_to_confirmed(self):
+        self.status = Status.CONFIRMED.value
+        self.save()
+
+    def clean(self):
+        if self.teacher_course_id.teacher_id == self.student_id:
+            raise ValidationError({'teacher_course_id': "Can't create a request to your own course"})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.student_course_id)
+
+    class Meta:
+        verbose_name = "Course"
+        verbose_name_plural = "Student Courses"
+        constraints = [models.UniqueConstraint(fields=['student_id', 'teacher_course_id'],
+                                               name="Already have a pending/confirmed request in this course")]
