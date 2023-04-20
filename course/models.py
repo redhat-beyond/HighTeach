@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
-from users.models import Profile
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 Category = [
@@ -54,7 +54,7 @@ class TeacherCoursesManager(models.Manager):
 
 class TeacherCourses(models.Model):
     course_id = models.BigAutoField(primary_key=True)
-    teacher_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    teacher_id = models.ForeignKey(User, on_delete=models.CASCADE)
     course_name = models.CharField(max_length=30, blank=False)
     description = models.TextField()
     price = models.PositiveIntegerField(default=0, blank=False)
@@ -98,17 +98,20 @@ class TeacherCourses(models.Model):
 class ReviewManager(models.Manager):
 
     def get_reviews_by_course(self, course_id: int):
-        reviews = self.filter(course_id=course_id)
+        reviews = Review.objects.filter(course_id=course_id)
         return reviews
 
     def get_avg_rating_by_course(self, course_id: int):
         avg_rating = self.filter(course_id=course_id).aggregate(models.Avg('rating'))['rating__avg']
         return avg_rating
 
+    def get_number_of_review_of_course(self, course_id):
+        return len(self.filter(course_id=course_id))
+
 
 class Review(models.Model):
     review_id = models.BigAutoField(primary_key=True)
-    student_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    student_id = models.ForeignKey(User, on_delete=models.CASCADE)
     course_id = models.ForeignKey(TeacherCourses, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     content = models.TextField(blank=True)
