@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'course.apps.CourseConfig',
     'chat.apps.ChatConfig',
-    'study_group.apps.StudyGroupConfig'
+    'study_group.apps.StudyGroupConfig',
+    'feed.apps.FeedConfig'
 ]
 
 MIDDLEWARE = [
