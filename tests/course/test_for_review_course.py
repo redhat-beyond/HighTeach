@@ -29,15 +29,9 @@ def new_user_number_two():
 
 @pytest.fixture
 def new_teacher_course(persist_user):
-    teacher_course = TeacherCourses(course_id=1, teacher_id=persist_user,
-                                    course_name="Math", description="course", price=70)
-    return teacher_course
-
-
-@pytest.fixture
-def new_teacher_course_number_two(persist_user_number_two):
-    teacher_course = TeacherCourses(course_id=1, teacher_id=persist_user_number_two,
-                                    course_name="English", description="course", price=100)
+    teacher_course = TeacherCourses(course_id=1, teacher_id=persist_user, difficulty_level='B',
+                                    category='MATHS', course_name="Math",
+                                    description="course", price=70)
     return teacher_course
 
 
@@ -49,8 +43,8 @@ def new_review(persist_user_number_two, persist_teacher_course):
 
 
 @pytest.fixture
-def new_review_two(persist_user, persist_teacher_course_number_two):
-    review = Review(student_id=persist_user, course_id=persist_teacher_course_number_two,
+def new_review_two(persist_user, persist_teacher_course):
+    review = Review(student_id=persist_user, course_id=persist_teacher_course,
                     rating=2, content="Greate course", date=date(2023, 4, 17))
     return review
 
