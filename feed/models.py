@@ -57,4 +57,3 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.course_id} | {self.user_id}: {self.content}"
-
