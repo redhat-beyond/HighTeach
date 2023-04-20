@@ -33,6 +33,7 @@ class Post(models.Model):
     parent_post_id = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     content = models.TextField(null=False)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
     objects = PostManager()
 
     def is_root_post(self):
