@@ -30,7 +30,7 @@ Level = [
 ]
 
 
-class TeacherCoursesManager(models.Manager):
+class TeacherCourseManager(models.Manager):
 
     def in_price_range(self, min: int, max: int):
         return self.filter(price__lte=max, price__gte=min)
@@ -53,13 +53,13 @@ class TeacherCoursesManager(models.Manager):
         return self.filter(teacher_id=id)
 
 
-class TeacherCourses(models.Model):
+class TeacherCourse(models.Model):
     course_id = models.BigAutoField(primary_key=True)
     teacher_id = models.ForeignKey(User, on_delete=models.CASCADE)
     course_name = models.CharField(max_length=30, blank=False)
     description = models.TextField()
     price = models.PositiveIntegerField(default=0, blank=False)
-    objects = TeacherCoursesManager()
+    objects = TeacherCourseManager()
 
     class Experience(models.IntegerChoices):
         ZERO = 0, _("0")
@@ -102,32 +102,32 @@ class TeacherCourses(models.Model):
 
 class ReviewManager(models.Manager):
 
-    def get_reviews_by_course(self, course_id: int):
-        reviews = Review.objects.filter(course_id=course_id)
+    def get_reviews_by_course(self, course: TeacherCourse):
+        reviews = Review.objects.filter(course=course)
         return reviews
 
-    def get_avg_rating_by_course(self, course_id: int):
-        avg_rating = self.filter(course_id=course_id).aggregate(models.Avg('rating'))['rating__avg']
+    def get_avg_rating_by_course(self, course: TeacherCourse):
+        avg_rating = self.filter(course=course).aggregate(models.Avg('rating'))['rating__avg']
         return avg_rating
 
-    def get_number_of_review_of_course(self, course_id):
-        return len(self.filter(course_id=course_id))
+    def get_number_of_review_of_course(self, course):
+        return len(self.filter(course=course))
 
 
 class Review(models.Model):
     review_id = models.BigAutoField(primary_key=True)
-    student_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    course_id = models.ForeignKey(TeacherCourses, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(TeacherCourse, on_delete=models.CASCADE)
     rating = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     content = models.TextField(blank=True)
     date = models.DateField(auto_now_add=True)
     objects = ReviewManager()
 
 
-class StudentCoursesManager(models.Manager):
+class StudentCourseManager(models.Manager):
 
     def get_teacher_pending(self, id: int):
-        return TeacherCourses.objects.get_teacher_courses(id).values("course_id").intersection(
+        return TeacherCourse.objects.get_teacher_courses(id).values("course_id").intersection(
             self.filter(status=Status.PENDING).values("teacher_course_id")).values_list(flat=True)
 
     def get_student_pending(self, id: int):
@@ -142,12 +142,12 @@ class Status(models.TextChoices):
     CONFIRMED = 'Confirmed'
 
 
-class StudentCourses(models.Model):
+class StudentCourse(models.Model):
     student_course_id = models.BigAutoField(primary_key=True)
     student_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    teacher_course_id = models.ForeignKey(TeacherCourses, on_delete=models.CASCADE)
+    teacher_course_id = models.ForeignKey(TeacherCourse, on_delete=models.CASCADE)
     request_date = models.DateTimeField(auto_now_add=True)
-    objects = StudentCoursesManager()
+    objects = StudentCourseManager()
 
     status = models.CharField(
         max_length=30,
