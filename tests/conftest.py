@@ -1,4 +1,5 @@
 import pytest
+
 from django.contrib.auth.models import User
 from study_group.models import StudyGroup
 from course.models import StudentCourses, TeacherCourses
