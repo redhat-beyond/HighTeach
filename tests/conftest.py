@@ -2,7 +2,7 @@ import pytest
 
 from django.contrib.auth.models import User
 from study_group.models import StudyGroup
-from course.models import StudentCourses, TeacherCourses
+from course.models import StudentCourse, TeacherCourse
 from chat.models import Message
 
 
@@ -100,10 +100,10 @@ def study_group0(persist_user):
 
 @pytest.fixture
 def student_course0(persist_user, persist_second_user):
-    teacher_course1 = TeacherCourses(teacher_id=persist_user, price=5, description='Test', course_name='Test Math',
-                                     difficulty_level='B', category='MATHS')
+    teacher_course1 = TeacherCourse(teacher_id=persist_user, price=5, description='Test', course_name='Test Math',
+                                    difficulty_level='B', category='MATHS')
     teacher_course1.save()
-    student_course = StudentCourses(student_id=persist_second_user, teacher_course_id=teacher_course1)
+    student_course = StudentCourse(student_id=persist_second_user, teacher_course_id=teacher_course1)
     student_course.save()
     return student_course
 
