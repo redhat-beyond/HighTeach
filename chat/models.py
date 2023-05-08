@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from course.models import StudentCourse
+from course.models import StudentCourses
 from study_group.models import StudyGroup
 
 
@@ -16,7 +16,7 @@ class ChatManager(models.Manager):
 class Message(models.Model):
     message_id = models.BigAutoField(primary_key=True, editable=False)
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
-    student_course = models.ForeignKey(StudentCourse, on_delete=models.CASCADE, blank=True, null=True)
+    student_course = models.ForeignKey(StudentCourses, on_delete=models.CASCADE, blank=True, null=True)
     group = models.ForeignKey(StudyGroup, on_delete=models.CASCADE, blank=True, null=True)
     date_time = models.DateTimeField(auto_now_add=True)
     message = models.CharField(max_length=255, blank=False)

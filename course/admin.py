@@ -1,8 +1,8 @@
 from django.contrib import admin
-from course.models import StudentCourse, Review, TeacherCourse
+from course.models import StudentCourses, Review, TeacherCourses
 
 
-class StudentCourseAdmin(admin.ModelAdmin):
+class StudentCoursesAdmin(admin.ModelAdmin):
     list_display = ('student_course_id', 'student_id', 'teacher_course_id', 'request_date', 'status')
     list_filter = ('status',)
 
@@ -12,7 +12,7 @@ class StudentCourseAdmin(admin.ModelAdmin):
         return ['status']
 
 
-class TeacherCourseAdmin(admin.ModelAdmin):
+class TeacherCoursesAdmin(admin.ModelAdmin):
     list_display = ('course_id', 'teacher_id', 'course_name', 'price', 'category', 'get_experience',
                     'difficulty_level')
     list_filter = ('category', 'years_of_experience', 'difficulty_level')
@@ -24,6 +24,6 @@ class TeacherCourseAdmin(admin.ModelAdmin):
         return []
 
 
-admin.site.register(TeacherCourse, TeacherCourseAdmin)
-admin.site.register(StudentCourse, StudentCourseAdmin)
+admin.site.register(TeacherCourses, TeacherCoursesAdmin)
+admin.site.register(StudentCourses, StudentCoursesAdmin)
 admin.site.register(Review)
