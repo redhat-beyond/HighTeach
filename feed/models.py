@@ -3,16 +3,16 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from django.contrib.auth.models import User
-from course.models import TeacherCourses, StudentCourses
+from course.models import TeacherCourse, StudentCourse
 
 
 class PostManager(models.Manager):
     @staticmethod
     def get_posts_for_user(user: User):
-        relevant_users = StudentCourses.objects.filter(
+        relevant_users = StudentCourse.objects.filter(
             Q(Q(student_id=user) & Q(status="Confirmed")) | Q(teacher_course_id__teacher_id=user)
         )
-        relevant_courses = TeacherCourses.objects.filter(studentcourses__in=relevant_users).distinct()
+        relevant_courses = TeacherCourse.objects.filter(studentcourse__in=relevant_users).distinct()
         relevant_posts = Post.objects.filter(course_id__in=relevant_courses).order_by("date")
 
         # create the post hierarchy in a dictionary that contains lists
@@ -28,7 +28,7 @@ class PostManager(models.Manager):
 
 class Post(models.Model):
     post_id = models.AutoField(primary_key=True)
-    course_id = models.ForeignKey(TeacherCourses, on_delete=models.CASCADE, related_name="related_posts")
+    course_id = models.ForeignKey(TeacherCourse, on_delete=models.CASCADE, related_name="related_posts")
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     parent_post_id = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
@@ -41,7 +41,7 @@ class Post(models.Model):
 
     @staticmethod
     def is_user_able_to_post_in_course(user, course):
-        return StudentCourses.objects.filter(
+        return StudentCourse.objects.filter(
             Q(Q(student_id=user) & Q(status="Confirmed")) | Q(teacher_course_id=course)
         ).exists()
 
