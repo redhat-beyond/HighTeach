@@ -1,9 +1,12 @@
 import pytest
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
+
 from study_group.models import StudyGroup
 from course.models import StudentCourses, TeacherCourses
 from chat.models import Message
+from feed.models import Post
 
 
 @pytest.fixture
@@ -119,3 +122,89 @@ def message_with_group(persist_user, study_group0):
 @pytest.fixture
 def message_with_student_course(persist_user, student_course0):
     return Message(sender=persist_user, student_course=student_course0, message=_TEST_MESSAGE)
+
+
+@pytest.fixture
+def persist_teacher():
+    user = User(username="teacher1",
+                first_name="test",
+                last_name="mctest",
+                email="test123@gmail.com")
+
+    user.set_password("PASSWORD")
+    user.save()
+
+    return user
+
+
+@pytest.fixture
+def persist_second_teacher():
+    user = User(username='second_teacher',
+                first_name='teacher',
+                last_name='mcteacher',
+                email='email@gmail.com')
+
+    user.set_password('second_pass')
+    user.save()
+    return user
+
+
+@pytest.fixture
+def persist_course(persist_teacher):
+    course = TeacherCourses(teacher_id=persist_teacher,
+                            course_name="linear algebra",
+                            description="linear algebra for CS students",
+                            price=100,
+                            years_of_experience=4,
+                            difficulty_level="I",
+                            category="MATHS")
+
+    course.save()
+    return course
+
+
+@pytest.fixture
+def persist_second_course(persist_second_teacher):
+    course = TeacherCourses(teacher_id=persist_second_teacher,
+                            course_name="riding a tricycle",
+                            description="riding a tricycle course for advanced tricycle riders",
+                            price=200,
+                            years_of_experience=5,
+                            difficulty_level="A",
+                            category="SPORT_AND_LEISURE")
+    course.save()
+    return course
+
+
+@pytest.fixture
+def persist_first_student_course(persist_course, persist_user):
+    student_course = StudentCourses(student_id=persist_user,
+                                    teacher_course_id=persist_course,
+                                    status="Confirmed")
+    student_course.save()
+    return student_course
+
+
+@pytest.fixture
+def persist_second_student_course(persist_second_course, persist_second_user):
+    student_course = StudentCourses(student_id=persist_second_user,
+                                    teacher_course_id=persist_second_course,
+                                    status="Confirmed")
+    student_course.save()
+    return student_course
+
+
+@pytest.fixture
+def persist_post_for_first_course(persist_course, persist_user, persist_first_student_course):
+    post = Post(course_id=persist_course,
+                user_id=persist_user,
+                parent_post_id=None,
+                content="this is a root post by a student for first course")
+    post.save()
+    return post
+
+
+@pytest.fixture
+def image_file():
+    image = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
+    return image
