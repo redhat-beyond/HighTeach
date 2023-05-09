@@ -25,3 +25,8 @@ class TestStudyGroupManager:
 
         groups_keyword_set = StudyGroup.objects.search_group_by_keyword("fixture")
         assert set(groups_keyword_set) == set([persist_group, persist_second_group])
+
+    def test_get_all_groups_for_user(self, persist_user, persist_group, persist_second_group):
+        persist_group.join_group(persist_user)
+
+        assert list(StudyGroup.objects.get_groups_by_user(persist_user)) == [persist_group]

@@ -12,6 +12,9 @@ class GroupManager(models.Manager):
     def search_group_by_keyword(self, keyword: str):
         return self.filter(Q(group_description__icontains=keyword) | Q(field__icontains=keyword))
 
+    def get_groups_by_user(self, user: User):
+        return self.filter(group_members__private_id=user)
+
 
 class StudyGroup(models.Model):
     study_group_id = models.AutoField(primary_key=True)
@@ -29,8 +32,16 @@ class StudyGroup(models.Model):
         group_member = GroupMember(group_id=self, private_id=user)
         group_member.save()
 
+    def leave_group(self, user: User):
+        if not self.is_user_in_group(user):
+            raise ValueError("User is not in group")
+        self.group_members.filter(private_id=user).delete()
+
+    def get_group_members_count(self):
+        return self.group_members.count()
+
     def is_group_full(self):
-        return self.group_members.count() >= self.capacity
+        return self.get_group_members_count() >= self.capacity
 
     def get_all_group_members(self):
         return User.objects.filter(pk__in=self.group_members.values_list('private_id', flat=True))
