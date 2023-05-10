@@ -3,7 +3,7 @@ import time
 
 from django.core.exceptions import ValidationError
 
-from course.models import StudentCourses
+from course.models import StudentCourse
 from feed.models import Post, PostManager
 
 
@@ -43,8 +43,8 @@ class TestPost:
 
     def test_is_user_able_to_post_in_course(self, persist_user, persist_course):
         assert not Post.is_user_able_to_post_in_course(persist_user, persist_course)
-        user_joined_group = StudentCourses(student_id=persist_user, teacher_course_id=persist_course,
-                                           status="Confirmed")
+        user_joined_group = StudentCourse(student_id=persist_user, teacher_course_id=persist_course,
+                                          status="Confirmed")
         user_joined_group.save()
         assert Post.is_user_able_to_post_in_course(persist_user, persist_course)
 
