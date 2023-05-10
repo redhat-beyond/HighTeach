@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'HighTeach.middleware_login.AdminRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'HighTeach.urls'

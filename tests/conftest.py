@@ -8,15 +8,18 @@ from course.models import StudentCourse, TeacherCourse
 from chat.models import Message
 from feed.models import Post
 
+USERNAME = "test1"
+PASSWORD = "PASSWORD"
+
 
 @pytest.fixture
 def new_user():
-    user = User(username="test1",
+    user = User(username=USERNAME,
                 first_name="test",
                 last_name="mctest",
                 email="test123@gmail.com")
 
-    user.set_password("PASSWORD")
+    user.set_password(PASSWORD)
     return user
 
 
