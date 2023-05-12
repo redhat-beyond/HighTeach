@@ -5,6 +5,7 @@
     <title>High.Teach</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/loggedInPage.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/297bbe7878.js" crossorigin="anonymous"></script>
@@ -44,7 +45,7 @@
         </div>
       </div>
     </nav>
-    <div class="container">{% block content %} {% endblock %}</div>
+    {% block content %} {% endblock %}
   </body>
 </html>
 

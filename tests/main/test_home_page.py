@@ -30,5 +30,5 @@ class TestHomepageView:
         client.force_login(persist_user)
         response = client.get('/')
         assert response.status_code == 200
-        assert 'homePage.html' in response.templates[0].name
+        assert 'loggedInPage.html' in response.templates[0].name
         assert b'Logout' in response.content
