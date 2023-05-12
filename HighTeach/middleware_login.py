@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 
 
 class AdminRedirectMiddleware:
@@ -14,5 +14,6 @@ class AdminRedirectMiddleware:
             password = request.POST.get('password')
             user = authenticate(username=username, password=password)
             if user is not None and not user.is_staff:
+                login(request, user)
                 return redirect('homePage')
         return response
