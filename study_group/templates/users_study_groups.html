@@ -1,0 +1,32 @@
+{% load study_group_tags %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/../../static/styles/study_group_stylesheet.css' %}">
+
+<div class="container">
+<div class="row">
+  {% for study_group in study_groups %}
+    <div class="col-md-4">
+      <div class="card bg-light mb-4 box-shadow shadow-sm border rounded">
+        <div class="card-body">
+          <h5 class="card-title card-link"
+              data-bs-toggle="collapse"
+              href="#groupDetails{{ study_group.pk }}"
+              role="button" aria-expanded="false"
+              aria-controls="groupDetails{{ study_group.pk }}">
+            <a href="{% url "study_group_detail" study_group.pk %}">{{ study_group.field }}</a>
+          </h5>
+          <p class="card-text text-truncate">{{ study_group.group_description }}</p>
+        <i class="bi bi-people-fill"></i>
+          <p class="card-text text-muted">{{ study_group|group_members_count_formatted }}</p>
+            {% include 'leave_join_button.html' %}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No study groups available.</p>
+  {% endfor %}
+</div>
+</div>
+{% endblock %}

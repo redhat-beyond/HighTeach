@@ -52,7 +52,7 @@ class TestJoinLeaveGroupButton:
         post_response = client.post(f"/study-group/join_leave/{persist_group.pk}/")
 
         assert post_response.status_code == 302
-        assert post_response.url == reverse("study_group_detail", kwargs={"pk": persist_group.pk})
+        assert post_response.url == reverse("study_groups_list_for_user")
         assert not persist_group.is_user_in_group(persist_user)
 
     def test_join_group(self, client, persist_user, persist_group):
@@ -62,7 +62,7 @@ class TestJoinLeaveGroupButton:
         post_response = client.post(f"/study-group/join_leave/{persist_group.pk}/")
 
         assert post_response.status_code == 302
-        assert post_response.url == reverse("study_group_detail", kwargs={"pk": persist_group.pk})
+        assert post_response.url == reverse("study_groups_list_for_user")
         assert persist_group.is_user_in_group(persist_user)
 
     def test_join_leave_non_existent_group(self, authorized_client, persist_group):
@@ -94,3 +94,26 @@ class TestJoinLeaveGroupButton:
         client.force_login(persist_user)
         response = client.get(f"/study-group/detail/{study_group.pk}/")
         assert b"Leave Group" in response.content
+
+
+@pytest.mark.django_db
+class TestStudyGroupListView:
+    def test_study_group_list_view_loaded_authorized(self, authorized_client):
+        study_group_list_response = authorized_client.get('/study-group/list/')
+        assert study_group_list_response.status_code == 200
+
+    def test_study_group_list_view_loaded_unauthorized(self, client):
+        study_group_list_response = client.get('/study-group/list/')
+        assert study_group_list_response.status_code == 302
+
+    @pytest.mark.parametrize("field, group_description, capacity",
+                             [("Test Group", "Description", 5)])
+    def test_create_new_study_group(self, authorized_client, field, group_description, capacity):
+        study_group_creation_form_args = {"field": field, "group_description": group_description, "capacity": capacity}
+
+        assert not StudyGroup.objects.filter(**study_group_creation_form_args).exists()
+        group_creation_response = authorized_client.post("/study-group/list/", study_group_creation_form_args)
+
+        assert group_creation_response.status_code == 302
+        assert group_creation_response.url == reverse("study_groups_list_for_user")
+        assert StudyGroup.objects.filter(**study_group_creation_form_args).exists()

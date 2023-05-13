@@ -213,12 +213,6 @@ def image_file():
 
 
 @pytest.fixture
-def authorized_client(client, persist_user):
-    client.force_login(persist_user)
-    return client
-
-
-@pytest.fixture
 def make_study_group_of_varied_size():
     def _make_study_group_of_varied_size(group_members_num, max_capacity):
         new_group = StudyGroup(
@@ -258,3 +252,9 @@ def persist_review(new_review):
 def persist_review_number_two(new_review_two):
     new_review_two.save()
     return new_review_two
+
+
+@pytest.fixture
+def authorized_client(client, persist_user):
+    client.force_login(persist_user)
+    return client
