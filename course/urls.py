@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CourseList
+from .views import CourseList, AddCourse
 from course import views
 
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path('review/delete_review/<int:pk>/', views.DeleteReviewView.as_view(), name="delete_review"),
     path('review/update_review/<int:pk>/', views.UpdateReviewView.as_view(), name="update_review"),
     path('', CourseList.as_view(), name='show_courses'),
+    path('add', AddCourse.as_view(), name="add_course"),
 ]

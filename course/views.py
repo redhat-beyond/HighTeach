@@ -4,6 +4,7 @@ from course.forms import ReviewForm
 from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView, CreateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import TeacherCourseForm
 
 
 class CourseList(LoginRequiredMixin, View):
@@ -64,3 +65,16 @@ class DeleteReviewView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('reviews', kwargs={'course_id': self.object.course_id})
+
+
+class AddCourse(LoginRequiredMixin, View):
+    def get(self, request):
+        form = TeacherCourseForm()
+        context = {'form': form}
+        return render(request, 'course/add_course.html', context)
+
+    def post(self, request):
+        user = TeacherCourse(teacher_id=request.user)
+        form = TeacherCourseForm(request.POST, instance=user)
+        form.save(request.POST)
+        return redirect('show_courses')
