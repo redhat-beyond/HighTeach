@@ -1,0 +1,12 @@
+.label{
+  font-weight: bold; 
+}
+.course_name{
+  font-weight: bold; 
+}
+
+hr{
+	height: 10px;
+	border: 0;
+	box-shadow: 0 10px 10px -10px #030303 inset;
+}

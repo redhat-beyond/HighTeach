@@ -1,0 +1,253 @@
+{% extends 'main/loggedInPage.html' %}
+{% block main_content %}
+{% load static %}
+
+  <head>
+      <title>Course</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta http-equiv="x-ua-compatible" content="ie=edge" />
+      <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+      />
+      <link rel="stylesheet" href="{% static 'styles/mdb.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'styles/course.page.css' %}" type="text/css">
+  </head>
+
+  <body>
+      <div class="row">
+        <div class="col-2">
+          <div
+            class="nav flex-column nav-pills text-center"
+            id="v-pills-tab"
+            role="tablist"
+            aria-orientation="vertical"
+          >
+            <a
+              class="nav-link active"
+              id="v-pills-course_info-tab"
+              data-mdb-toggle="pill"
+              href="#v-pills-course_info"
+              role="tab"
+              aria-controls="v-pills-course_info"
+              aria-selected="true"
+              >Course Info</a
+            >
+            <a
+              class="nav-link"
+              id="v-pills-profile-tab"
+              data-mdb-toggle="pill"
+              href="#v-pills-profile"
+              role="tab"
+              aria-controls="v-pills-profile"
+              aria-selected="false"
+              >Feed</a
+            >
+            <a
+              class="nav-link"
+              id="v-pills-messages-tab"
+              data-mdb-toggle="pill"
+              href="#v-pills-messages"
+              role="tab"
+              aria-controls="v-pills-messages"
+              aria-selected="false"
+              >Messages</a
+            >
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="tab-content" id="v-pills-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="v-pills-course_info"
+              role="tabpanel"
+              aria-labelledby="v-pills-course_info-tab"
+            >
+
+              <label class="label">Course Name :</label>
+              <p class='course_name'style="display:inline" >{{course.course_name.capitalize }}</p>
+
+              <br></br>
+              <label class="label">Course Description :</label>
+              <br></br>
+              <p>{{course.description}}</p>
+
+              <label class="label">Category :</label>
+              <p style="display:inline">{{course.get_category_display}}</p>
+
+              <br></br>
+              <label class="label">Difficulty Level :</label>
+              <p style="display:inline">{{course.get_difficulty_level_display}}</p>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-profile"
+              role="tabpanel"
+              aria-labelledby="v-pills-profile-tab"
+            >
+              Feed content
+              {% block Feed %} {% endblock %}
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-messages"
+              role="tabpanel"
+              aria-labelledby="v-pills-messages-tab"
+            >
+              Messages content
+              {% block Messages %} {% endblock %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4">
+              <div class="row d-flex justify-content-end align-items-flex-start h-100">
+                  <div class="card" style="border-radius: 15px;">
+                    <div class="card-body text-center">
+                      <div class="mt-3 mb-4">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
+                          class="rounded-circle img-fluid" style="width: 100px;" />
+                      </div>
+                      <h4 class="mb-2"><a href="/teacher">{{course.teacher_id}}</a></h4>
+                      <p class="text-muted mb-4">@{{course.teacher_id.profile.profession}} </p>
+                      <div class="mb-4 pb-2">
+                        <button type="button" class="btn btn-outline-primary btn-floating">
+                          <i class="fab fa-facebook-f fa-lg"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-floating">
+                          <i class="fab fa-twitter fa-lg"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-floating">
+                          <i class="fab fa-skype fa-lg"></i>
+                        </button>
+                      </div>
+                      <form action='{{course.course_id}}/connect' method='POST'>
+                        {% csrf_token %}
+                        {% if view == 'P' %}
+                        <button type='submit' class="btn btn-primary btn-rounded btn-lg" disabled>
+                          Requset Sent
+                        </button>
+                        {% elif view == 'C' %}
+                        <button type='submit' class="btn btn-primary btn-rounded btn-lg" disabled>
+                          Signed-up
+                        </button>
+                        {% elif course.teacher_id == user %}
+                        {% else %}
+                        <button type='submit' class="btn btn-primary btn-rounded btn-lg">
+                          Join Course
+                        </button>
+                        {% endif %}
+
+                      </form>
+                      <div class="d-flex justify-content-between text-center mt-5 mb-2">
+                        <div>
+                          <p class="mb-2 h6">{{course.teacher_id.profile.get_meeting_method_display}}</p>
+                          <p class="text-muted mb-0">Meeting Method</p>
+                        </div>
+                        <div class="px-3">
+                          <p class="mb-2 h6">{{course.get_years_of_experience_display}}</p>
+                          <p class="text-muted mb-0">Years Of Experience</p>
+                        </div>
+                        <div>
+                          <p class="mb-2 h6">{{course.price}} ₪</p>
+                          <p class="text-muted mb-0">Coruse Price</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  <hr>
+  <br>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-3 px-md-5">
+        <h5> Course Reviews :</h5>
+        <br><br>
+        <h7> Number Of Reviews : {{reviews.count}}</h7>
+        <br><br>
+        <h7> Avrage Rating : {{course.avg_rating_for_course}} / 5</h7>
+        <br><br>
+        <button type='submit' class="btn btn-primary btn-rounded btn-lg" disabled>
+          Add Review
+        </button>
+
+      </div>
+      {% if reviews%}
+      <div class="col-4">
+        <div id="carouselExampleControls" class="carousel slide text-center carousel-dark" data-mdb-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="row d-flex justify-content-center">
+                <div class="col-lg-8">
+                <h5 class="mb-3">{{reviews.first.student.username}}</h5>
+                <p>{{reviews.first.student.profile.profession}}</p>
+                <p class="text-muted">
+                  {{reviews.first.content}}
+                </p>
+                </div>
+              </div>
+            <ul class="list-unstyled d-flex justify-content-center text-warning mb-0">
+              {% with ''|center:reviews.first.rating as range %}
+              {% for i in range %}
+              <li><i class="fas fa-star fa-sm"></i></li>
+              {% endfor %}
+              {% endwith %}
+            </ul>
+          </div>
+          {% for review in reviews %}
+            {% if review != reviews.first%}
+              <div class="carousel-item">
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-lg-8">
+                      <h5 class="mb-3">{{review.student.username}}</h5>
+                      <p>{{review.student.profile.profession}}</p>
+                      <p class="text-muted">
+                        {{review.content}}
+                      </p>
+                    </div>
+                  </div>
+                  <ul class="list-unstyled d-flex justify-content-center text-warning mb-0">
+                    {% with ''|center:review.rating as range %}
+                    {% for i in range %}
+                    <li><i class="fas fa-star fa-sm"></i></li>
+                    {% endfor %}
+                    {% endwith %}
+                  </ul>
+                </div>
+            {% endif %}
+          {% endfor %}
+        <button class="carousel-control-prev" type="button" data-mdb-target="#carouselExampleControls"
+          data-mdb-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-mdb-target="#carouselExampleControls"
+          data-mdb-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  {% endif %}
+
+  </body>
+    <script type="text/javascript" src="{% static 'styles/js/mdb.min.js' %}"></script>
+    <script type="text/javascript"></script>
+</html>
+
+{% endblock %}
