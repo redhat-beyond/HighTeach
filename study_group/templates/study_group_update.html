@@ -1,0 +1,16 @@
+{% extends 'main/loggedInPage.html' %}
+
+{% load static %}
+
+{% block main_content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/study_group_stylesheet.css' %}">
+    <div class="bg-light border">
+        <h4>Edit study group details</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Update">
+        </form>
+    </div>
+
+{% endblock %}

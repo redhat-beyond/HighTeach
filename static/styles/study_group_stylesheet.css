@@ -1,0 +1,9 @@
+h2, h4, a {
+  color: #2E8B57;
+}
+
+.list-group-item {
+  background-color: rgba(238, 238, 238, 0.62);
+  border: none;
+  color: #555555;
+}

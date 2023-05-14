@@ -1,0 +1,10 @@
+<form action="{% url "leave_or_join_group" study_group.pk %}" method="post">
+{% csrf_token %}
+  {% if request.user in study_group.get_all_group_members %}
+      <button type="submit" class="btn btn-secondary">Leave Group</button>
+  {% elif study_group.is_group_full %}
+      <button type="submit" class="btn btn-secondary" disabled>Group Full</button>
+  {% else %}
+      <button type="submit" class="btn btn-success">Join Group</button>
+  {% endif %}
+</form>

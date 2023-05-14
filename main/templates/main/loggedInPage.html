@@ -25,7 +25,10 @@
               <li><i class="fa fa-comments icon4"></i><a class="noDecoration" href="#">Messages</a></li>
               <li><i class="fa fa-sharp fa-regular fa-graduation-cap"></i><a class="noDecoration" href="#">My Courses</a></li>
             {% if user.profile.account_type == 'S' %}
-              <li><i class="fa fa-users icon2"></i><a class="noDecoration" href="#">Study Groups</a></li>
+              <li>
+                  <i class="fa fa-users icon2"></i>
+                  <a class="noDecoration" href="/study-group/list/">Study Groups</a>
+              </li>
             {% endif %}
             </ul>
         </div>
