@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from main import views
+from chat import views as chat_views
 from django.contrib.auth import views as auth_views
 
 
@@ -26,4 +27,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='main/homePage.html'), name='logout'),
     path('study-group/', include('study_group.urls')),
     path('course/', include('course.urls')),
+    path('chat', chat_views.chat_view, name='chat'),
+    path('chat/courses/<int:course_id>', chat_views.getCourseChat),
+    path('chat/groups/<int:group_id>', chat_views.getGroupChat),
+    path('chat/post-message/', chat_views.addMessage),
 ]

@@ -15,6 +15,9 @@ class GroupManager(models.Manager):
     def get_groups_by_user(self, user: User):
         return self.filter(group_members__private_id=user)
 
+    def get_group_by_id(self, group_id: int):
+        return self.filter(study_group_id=group_id)
+
 
 class StudyGroup(models.Model):
     study_group_id = models.AutoField(primary_key=True)

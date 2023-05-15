@@ -165,6 +165,9 @@ class StudentCourseManager(models.Manager):
     def is_student_requset_pending(self, course: TeacherCourse, student: User):
         return bool(self.filter(teacher_course_id=course, student_id=student, status=Status.PENDING))
 
+    def get_course(self, course_id: int):
+        return self.filter(student_course_id=course_id)
+
 
 class Status(models.TextChoices):
     PENDING = 'Pending'

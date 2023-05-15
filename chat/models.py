@@ -12,6 +12,17 @@ class ChatManager(models.Manager):
     def get_student_course_chat(self, student_course_id):
         return self.filter(student_course__student_course_id=student_course_id).order_by('date_time')
 
+    @staticmethod
+    def get_student_contacts_list(user_id):
+        student_courses = StudentCourse.objects.filter(student_id=user_id)
+        return student_courses
+
+    @staticmethod
+    def get_teacher_contacts_list(user_id):
+        student_courses = StudentCourse.objects.select_related('teacher_course_id') \
+            .select_related('teacher_course_id__teacher_id').filter(teacher_course_id__teacher_id=user_id)
+        return student_courses
+
 
 class Message(models.Model):
     message_id = models.BigAutoField(primary_key=True, editable=False)

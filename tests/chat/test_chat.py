@@ -61,3 +61,43 @@ class TestChatManager:
             student_course_id=message_with_student_course.student_course.student_course_id)
 
         assert message_with_student_course in course_messages
+
+
+@pytest.mark.django_db
+class TestChatAPI:
+    def test_get_student_course_chat(self, client, persist_second_user, student_course0,
+                                     persist_message_with_student_course):
+        client.force_login(user=persist_second_user)
+        response = client.get(f'/chat/courses/{student_course0.student_course_id}')
+        response_message_ids = [m['message_id'] for m in response.data]
+
+        assert persist_message_with_student_course.message_id in response_message_ids
+
+    def test_add_message_to_course_chat(self, client, persist_second_user, student_course0):
+        chat_messages = Message.objects.get_student_course_chat(student_course0.student_course_id)
+        len_messages_before_post = len(chat_messages)
+        client.force_login(user=persist_second_user)
+        client.post('/chat/post-message/', {
+            "courseId": student_course0.student_course_id,
+            "message": "Test",
+        })
+        chat_messages_after_post = Message.objects.get_student_course_chat(student_course0.student_course_id)
+        assert len(chat_messages_after_post) == len_messages_before_post + 1
+
+    def test_get_study_group_chat(self, client, persist_user, study_group0, persist_message_with_group):
+        client.force_login(user=persist_user)
+        response = client.get(f'/chat/groups/{study_group0.study_group_id}')
+        response_message_ids = [m['message_id'] for m in response.data]
+
+        assert persist_message_with_group.message_id in response_message_ids
+
+    def test_add_message_to_group_chat(self, client, persist_user, study_group0):
+        chat_messages = Message.objects.get_group_chat(study_group0.study_group_id)
+        len_messages_before_post = len(chat_messages)
+        client.force_login(user=persist_user)
+        client.post('/chat/post-message/', {
+            "groupId": study_group0.study_group_id,
+            "message": "Test",
+        })
+        chat_messages_after_post = Message.objects.get_group_chat(study_group0.study_group_id)
+        assert len(chat_messages_after_post) == len_messages_before_post + 1
