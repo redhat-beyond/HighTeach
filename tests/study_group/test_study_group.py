@@ -1,8 +1,24 @@
 import pytest
-from study_group.models import GroupMember
+from study_group.models import StudyGroup, GroupMember
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
+
+
+@pytest.fixture
+def make_study_group_of_varied_size():
+    def _make_study_group_of_varied_size(group_members_num, max_capacity):
+        new_group = StudyGroup(
+            group_owner=User.objects.create(username='group_owner', password='pass'),
+            field="field",
+            group_description="description",
+            capacity=max_capacity)
+        new_group.save()
+        for i in range(group_members_num):
+            new_group.join_group((User.objects.create(username=f'user{i}', password='pass')))
+        return new_group
+
+    return _make_study_group_of_varied_size
 
 
 @pytest.mark.django_db
@@ -56,3 +72,19 @@ class TestStudyGroup:
         persist_group.field = over_char_limit
         with pytest.raises(ValidationError):
             persist_group.save()
+
+    @pytest.mark.parametrize("num_of_members, max_capacity", [(0, 5), (1, 5), (5, 5)])
+    def test_join_get_members_count(self, make_study_group_of_varied_size, num_of_members, max_capacity):
+        study_group = make_study_group_of_varied_size(num_of_members, max_capacity)
+        assert study_group.get_group_members_count() == num_of_members
+
+    def test_leave_group(self, persist_user, persist_group):
+        persist_group.join_group(persist_user)
+        persist_group.leave_group(persist_user)
+        assert persist_user not in set(persist_group.get_all_group_members())
+
+    def test_leave_group_not_member_of(self, persist_user, persist_group):
+        assert persist_user not in set(persist_group.get_all_group_members())
+
+        with pytest.raises(ValueError):
+            persist_group.leave_group(persist_user)
