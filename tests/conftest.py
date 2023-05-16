@@ -1,12 +1,11 @@
 import pytest
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
-
 from study_group.models import StudyGroup
-from course.models import StudentCourse, TeacherCourse
+from course.models import StudentCourse, TeacherCourse, Review
 from chat.models import Message
 from feed.models import Post
+from datetime import date
 
 USERNAME = "test1"
 PASSWORD = "PASSWORD"
@@ -211,3 +210,29 @@ def persist_post_for_first_course(persist_course, persist_user, persist_first_st
 def image_file():
     image = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
     return image
+
+
+@pytest.fixture
+def new_review(persist_second_user, persist_course):
+    review = Review(student=persist_second_user, course=persist_course,
+                    rating=1, content="Greate course", date=date(2023, 4, 17))
+    return review
+
+
+@pytest.fixture
+def new_review_two(persist_user, persist_course):
+    review = Review(student=persist_user, course=persist_course,
+                    rating=2, content="Greate course", date=date(2023, 4, 17))
+    return review
+
+
+@pytest.fixture
+def persist_review(new_review):
+    new_review.save()
+    return new_review
+
+
+@pytest.fixture
+def persist_review_number_two(new_review_two):
+    new_review_two.save()
+    return new_review_two
