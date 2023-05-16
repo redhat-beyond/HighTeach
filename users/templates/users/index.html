@@ -1,4 +1,4 @@
-{% extends 'loggedInPage.html' %}
+{% extends 'main/loggedInPage.html' %}
 {% block main_content %}
 
 <h1>Edit Profile </h1>
@@ -8,6 +8,7 @@
   {% csrf_token %}
   <fieldset class="form-group">
       <legend class="border-bottom mb-4">Profile Info</legend>
+      <img decoding="async" src="https://us.123rf.com/450wm/kritchanut/kritchanut1308/kritchanut130800064/21738699-avatar-hombre-foto-de-perfil-vector.jpg?ver=6" width="100" height="100">
       {{ user_form.as_p }}
       {{ profile_form.as_p }}
   </fieldset>
@@ -15,6 +16,13 @@
       <br/>
       <button class="btn btn-outline-info" type="submit">Update</button>
   </div>
+  {% if messages %}
+  <div class="alert alert-danger mt-3">
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+  </div>
+  {% endif %}
 </form>
 </div>
 {% endblock %}
