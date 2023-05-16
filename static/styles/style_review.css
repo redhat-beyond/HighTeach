@@ -1,0 +1,39 @@
+.star-rating {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    display: inline-block;
+    cursor: pointer;
+    color: #ddd;
+    font-size: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #f5b301;
+}
+
+.star-rating label:hover:before,
+.star-rating label:hover ~ label:before,
+.star-rating input:checked ~ label:before {
+    content: "\2605";
+    position: absolute;
+}
+
+.star-rating label:before {
+    content: "\2606";
+    position: absolute;
+}
+
+textarea {
+    resize: none;
+}
