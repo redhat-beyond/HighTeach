@@ -52,6 +52,13 @@ class TeacherCourseManager(models.Manager):
     def get_teacher_courses(self, id: int):
         return self.filter(teacher_id=id)
 
+    def get_student_approved_teacher_courses(self, id: User):
+        teacher_courses = self.none()
+        studentCourses = StudentCourse.objects.get_student_confirmed(id=id)
+        for student in studentCourses.values_list():
+            teacher_courses |= self.filter(course_id=student[2])
+        return teacher_courses
+
 
 class TeacherCourse(models.Model):
     course_id = models.BigAutoField(primary_key=True)
@@ -135,6 +142,9 @@ class StudentCourseManager(models.Manager):
 
     def get_student_courses(self, id: int):
         return self.filter(student_id=id)
+
+    def get_student_confirmed(self, id: User):
+        return self.filter(student_id=id, status=Status.CONFIRMED)
 
 
 class Status(models.TextChoices):
