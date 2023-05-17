@@ -20,12 +20,12 @@
             {% endif %}
             </div>
             <ul class="nav-news-feed">
-              <li><i class="fa fa-list-alt icon1"></i><div><div class="litext" href="#">Feed</div></div></li>
-              <li><i class="fa fa-search"></i><div><div class="litext" href="#">Search</div></div></li>
-              <li><i class="fa fa-comments icon4"></i><div><div class="litext" href="#">Messages</div></div></li>
-              <li><i class="fa fa-sharp fa-regular fa-graduation-cap"></i><div><div class="litext" href="#">My Courses</div></div></li>
+              <li><i class="fa fa-list-alt icon1"></i><a class="noDecoration" href="#">Feed</a></li>
+              <li><i class="fa fa-search"></i><a class="noDecoration" href="#">Search</a></li>
+              <li><i class="fa fa-comments icon4"></i><a class="noDecoration" href="#">Messages</a></li>
+              <li><i class="fa fa-sharp fa-regular fa-graduation-cap"></i><a class="noDecoration" href="#">My Courses</a></li>
             {% if user.profile.account_type == 'S' %}
-              <li><i class="fa fa-users icon2"></i><div><div class="litext" href="#">Study Groups</div></div></li>
+              <li><i class="fa fa-users icon2"></i><a class="noDecoration" href="#">Study Groups</a></li>
             {% endif %}
             </ul>
         </div>
