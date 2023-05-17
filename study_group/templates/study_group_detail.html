@@ -1,0 +1,53 @@
+{% extends 'main/loggedInPage.html' %}
+
+{% load static %}
+
+{% block main_content %}
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/study_group_stylesheet.css' %}">
+
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="chat-placeholder bg-light mb-4 p-3 shadow-sm border rounded">
+          <h4 class="card-title">Chat</h4>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+          <div class="member-card bg-light mb-4 p-3 shadow-sm border rounded">
+            <h2 class="mt-4">{{ study_group.field }}</h2>
+            <p>{{ study_group.group_description }}</p>
+              {% if study_group.group_owner == request.user %}
+                  <a href="{% url "study_group_update" study_group.pk %}">
+                      <div class="d-flex align-items-center">
+                          <i class="bi bi-pencil-square"></i>
+                          <p>Edit Group info</p>
+                      </div>
+                  </a>
+              {% endif %}
+                {% include "leave_join_button.html" %}
+          </div>
+
+        <div class="member-card bg-light mb-4 p-3 shadow-sm border rounded">
+            <div class="mb-3">
+                <h4 class="card-title">Group Members</h4>
+            </div>
+
+        <div class="input-group rounded">
+          <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+          <span class="input-group-text border-0" id="search-addon">
+            <i class="fas fa-search"></i>
+          </span>
+        </div>
+          <div class="member-list rounded">
+            <ul class="list-group">
+              {% for member in study_group.get_all_group_members %}
+                <li class="list-group-item">{{ member.username }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

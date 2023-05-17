@@ -213,6 +213,28 @@ def image_file():
 
 
 @pytest.fixture
+def authorized_client(client, persist_user):
+    client.force_login(persist_user)
+    return client
+
+
+@pytest.fixture
+def make_study_group_of_varied_size():
+    def _make_study_group_of_varied_size(group_members_num, max_capacity):
+        new_group = StudyGroup(
+            group_owner=User.objects.create(username='group_owner', password='pass'),
+            field="field",
+            group_description="description",
+            capacity=max_capacity)
+        new_group.save()
+        for i in range(group_members_num):
+            new_group.join_group((User.objects.create(username=f'user{i}', password='pass')))
+        return new_group
+
+    return _make_study_group_of_varied_size
+
+
+@pytest.fixture
 def new_review(persist_second_user, persist_course):
     review = Review(student=persist_second_user, course=persist_course,
                     rating=1, content="Greate course", date=date(2023, 4, 17))
