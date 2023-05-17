@@ -22,7 +22,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homePage, name='homePage'),
     path('logout', views.logout_view, name='logout'),
-    path('profile/', users.index, name='profile'),
+    path('signup', users.index, name='profile'),
     #path('getProfile', users.static_profile, name='getProfile'),
-    path('users/<str:slug>/',  users.ProfileDetailView.as_view(), name='profile-detail')
+    path('users/<str:slug>/',  users.ProfileDetailView.as_view(), name='profile-detail'),
+    #===========================================================================
+    path('edit-profile/', users.edit_profile, name='users-edit-profile'),
 ]
