@@ -48,7 +48,8 @@ class Post(models.Model):
     def clean(self):
         if self.parent_post_id and self.parent_post_id.parent_post_id:
             raise ValidationError("Replies can only be made directly to the original post")
-        if not self.is_user_able_to_post_in_course(self.user_id, self.course_id):
+
+        if hasattr(self, "user_id") and not self.is_user_able_to_post_in_course(self.user_id, self.course_id):
             raise ValidationError("User is not course owner or participant")
         return super().clean()
 

@@ -77,3 +77,25 @@ class TestPostManager:
 
         posts_for_user = list(PostManager.get_posts_for_user(persist_user).keys())
         assert all(earlier.date <= later.date for earlier, later in zip(posts_for_user, posts_for_user[1:]))
+
+
+@pytest.mark.django_db
+class TestPostsListView:
+    def test_create_post(self, client, persist_course, persist_user, persist_first_student_course):
+        client.force_login(persist_user)
+        post_creation_form_args = {
+            "course_id": persist_course.course_id,
+            "user_id": persist_user,
+            "content": "yarden"
+        }
+        assert not Post.objects.filter(**post_creation_form_args).exists()
+        post_creation_response = client.post("/feed/list/", data=post_creation_form_args)
+        assert post_creation_response.status_code == 302
+        assert Post.objects.filter(**post_creation_form_args).exists()
+
+    def test_created_post_in_view(self, client, persist_post_for_first_course):
+        client.force_login(persist_post_for_first_course.user_id)
+        response = client.get('/feed/list/')
+        assert response.status_code == 200
+        response_posts = response.context['posts']
+        assert any(persist_post_for_first_course.post_id == post.post_id for post in response_posts)
