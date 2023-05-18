@@ -25,4 +25,5 @@ urlpatterns = [
     path('course/', include('course.urls')),
     path('logout/', auth_views.LogoutView.as_view(template_name='main/homePage.html'), name='logout'),
     path('study-group/', include('study_group.urls')),
+    path('course/', include('course.urls')),
 ]

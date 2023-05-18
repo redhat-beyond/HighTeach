@@ -1,0 +1,63 @@
+{% extends 'main/loggedInPage.html' %}
+{% load static %}
+{% block main_content  %}
+    <title>Course Review</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/style_review.css' %}">
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center">Course Review</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_rating">Rating:</label>
+                    <div class="star-rating">
+                    {% if form.rating.value %}
+                        {% with form.rating.value|add:'0' as rating_value %}
+                        {% for i in "54321" %}
+                            {% if rating_value|stringformat:"s" == i %}
+                                <input type="radio" name="{{ form.rating.name }}" id="rating-{{ i }}" value="{{ i }}" checked>
+                            {% else %}
+                                <input type="radio" name="{{ form.rating.name }}" id="rating-{{ i }}" value="{{ i }}">
+                            {% endif %}
+                            <label for="rating-{{ i }}">&#9733;</label>
+                        {% endfor %}
+                        {% endwith %}
+                    {% else %}
+                        {% for i in "54321" %}
+                            <input type="radio" name="{{ form.rating.name }}" id="rating-{{ i }}" value="{{ i }}">
+                            <label for="rating-{{ i }}">&#9733;</label>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="id_content" class="col-md-1.5 col-form-label">Content:</label>
+                    <div class="col-md-10">
+                        {{ form.content }}
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 30px;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'reviews' course_id %}" class="btn btn-secondary">Cancel Review</a>
+                        </div>
+                    </div>
+                </div>
+                {% if messages %}
+                    <div class="alert alert-danger mt-3">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}
