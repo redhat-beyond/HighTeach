@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from course.models import Review, TeacherCourse
+from course.models import Review, TeacherCourse, StudentCourse
 from course.forms import ReviewForm
 from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView, CreateView, View
@@ -78,3 +78,20 @@ class AddCourse(LoginRequiredMixin, View):
         form = TeacherCourseForm(request.POST, instance=user)
         form.save(request.POST)
         return redirect('show_courses')
+
+
+class CoursePage(LoginRequiredMixin, View):
+    def get(self, request, course_id):
+        course = TeacherCourse.objects.filter(course_id=course_id)[0]
+        view = course.is_student_in_course(request.user)
+        reviews = Review.objects.get_reviews_by_course(course=course_id)
+        context = {'course': course, 'reviews': reviews, 'view': view}
+        return render(request, 'course/course_page.html', context)
+
+
+class ConnectCourseToStudent(LoginRequiredMixin, View):
+    def post(self, request, course_id):
+        course = TeacherCourse.objects.filter(course_id=course_id)[0]
+        studentCourse = StudentCourse(student_id=request.user, teacher_course_id=course)
+        studentCourse.save()
+        return redirect('/course/' + str(course_id))

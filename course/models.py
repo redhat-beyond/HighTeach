@@ -99,6 +99,19 @@ class TeacherCourse(models.Model):
         # Function for display in Admin
         return self.Experience.choices[int(self.years_of_experience)][1]
 
+    def is_student_in_course(self, student: User):
+        if StudentCourse.objects.is_student_enrolled_in_course(self, student):
+            return 'C'
+        if StudentCourse.objects.is_student_requset_pending(self, student):
+            return 'P'
+        return 'N'
+
+    def avg_rating_for_course(self):
+        avg = Review.objects.get_avg_rating_by_course(self)
+        if avg is None:
+            return 0
+        return '%.2f' % avg
+
     def __str__(self):
         return self.course_name
 
@@ -145,6 +158,12 @@ class StudentCourseManager(models.Manager):
 
     def get_student_confirmed(self, id: User):
         return self.filter(student_id=id, status=Status.CONFIRMED)
+
+    def is_student_enrolled_in_course(self, course: TeacherCourse, student: User):
+        return bool(self.filter(teacher_course_id=course, student_id=student, status=Status.CONFIRMED))
+
+    def is_student_requset_pending(self, course: TeacherCourse, student: User):
+        return bool(self.filter(teacher_course_id=course, student_id=student, status=Status.PENDING))
 
 
 class Status(models.TextChoices):

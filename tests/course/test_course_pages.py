@@ -1,5 +1,5 @@
 import pytest
-from course.models import TeacherCourse
+from course.models import TeacherCourse, StudentCourse
 from django.urls import reverse
 
 COURSE_NAME = "math course"
@@ -71,3 +71,35 @@ class TestAddCourseView:
         assert course_creation_response.status_code == 200
         assert 'courses.html' in course_creation_response.templates[0].name
         assert TeacherCourse.objects.filter(**teacher_course).exists()
+
+
+@pytest.mark.django_db
+class TestCoursePageView:
+
+    def test_coures_page_authorized(self, authorized_client, persist_course):
+        course_response = authorized_client.get('/course/' + str(persist_course.course_id))
+        assert course_response.status_code == 200
+        expected_template_name = 'course_page.html'
+        page_templates = course_response.templates[0].name
+        assert expected_template_name in page_templates
+
+    def test_courses_page_unauthorized(self, client, persist_course):
+        course_response = client.get('/course/' + str(persist_course.course_id))
+        assert course_response.status_code == 302
+
+    def test_enroll_in_course(self, authorized_client, persist_course, persist_user):
+        student_course = {'teacher_course_id': persist_course, 'student_id': persist_user}
+        assert not StudentCourse.objects.filter(**student_course).exists()
+        course_creation_response = authorized_client.post("/course/" + str(persist_course.course_id) + "/connect",
+                                                          follow=True)
+        assert course_creation_response.status_code == 200
+        assert StudentCourse.objects.filter(**student_course).exists()
+        expected_template_name = 'course_page.html'
+        page_templates = course_creation_response.templates[0].name
+        assert expected_template_name in page_templates
+
+    def test_show_course_page(self, authorized_client, persist_course):
+        response = authorized_client.get("/course/" + str(persist_course.course_id))
+        assert response.status_code == 200
+        course_in_page = response.context['course']
+        assert persist_course.course_id == course_in_page.course_id

@@ -21,7 +21,7 @@
             </thead>
             {% for course in courses %}
             <tbody>
-                <td><a href="#">{{course.course_name.capitalize}}</td>
+                <td><a href="/course/{{course.course_id}}">{{course.course_name.capitalize}}</td>
                 <td><a href="#">{{course.teacher_id}}</td>
                 <td>{{course.price}} ₪</td>
                 <td>{{course.get_category_display.capitalize}}</td>
