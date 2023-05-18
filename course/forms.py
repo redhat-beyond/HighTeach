@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import ModelForm
+from .models import TeacherCourse
 
 
 class ReviewForm(forms.Form):
@@ -17,3 +19,11 @@ class ReviewForm(forms.Form):
         label='Content:',
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'style': 'resize: none'}),
     )
+
+
+class TeacherCourseForm(ModelForm):
+    class Meta:
+        model = TeacherCourse
+        fields = ('course_name', 'description',
+                  'price', 'years_of_experience', 'difficulty_level',
+                  'category')

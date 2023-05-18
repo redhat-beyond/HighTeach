@@ -48,3 +48,26 @@ class TestCourseTableView:
         assert response.status_code == 200
         courses_ids = [course.pk for course in response.context['courses']]
         assert persist_first_student_course.student_course_id in courses_ids
+
+
+@pytest.mark.django_db
+class TestAddCourseView:
+
+    def test_courses_add_authorized(self, authorized_client):
+        course_response = authorized_client.get('/course/add')
+        assert course_response.status_code == 200
+        assert 'add_course.html' in course_response.templates[0].name
+
+    def test_courses_add_unauthorized(self, client):
+        course_response = client.get('/course/add')
+        assert course_response.status_code == 302
+
+    def test_add_course(self, authorized_client):
+        teacher_course = {"course_name": COURSE_NAME, "description": DESCRIPTION,
+                          "difficulty_level": DIFFICULTY, "category": CATEGORY,
+                          "price": PRICE, "years_of_experience": YEARS_OF_EXP}
+        assert not TeacherCourse.objects.filter(**teacher_course).exists()
+        course_creation_response = authorized_client.post("/course/add", teacher_course, follow=True)
+        assert course_creation_response.status_code == 200
+        assert 'courses.html' in course_creation_response.templates[0].name
+        assert TeacherCourse.objects.filter(**teacher_course).exists()
