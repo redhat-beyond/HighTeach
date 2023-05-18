@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, View
+from django.views.generic import DetailView, ListView, View
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 
 from .models import StudyGroup
+from .forms import StudyGroupCreationForm
 
 
 class StudyGroupDetailView(LoginRequiredMixin, DetailView):
@@ -28,6 +29,29 @@ class StudyGroupUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("study_group_detail", kwargs={"pk": self.object.pk})
 
 
+class StudyGroupListView(LoginRequiredMixin, ListView):
+    model = StudyGroup
+    template_name = 'study_group_hub.html'
+    context_object_name = 'study_groups'
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = StudyGroup.objects.get_groups_by_user(user)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['create_study_group_form'] = StudyGroupCreationForm()
+        return context
+
+    def post(self, request):
+        user = request.user
+        form = StudyGroupCreationForm(request.POST, group_owner=user)
+        if form.is_valid():
+            form.save()
+        return redirect('study_groups_list_for_user')
+
+
 class LeaveJoinGroupView(LoginRequiredMixin, View):
     def post(self, request, pk):
         group = get_object_or_404(StudyGroup, pk=pk)
@@ -38,4 +62,4 @@ class LeaveJoinGroupView(LoginRequiredMixin, View):
         else:
             group.join_group(user)
 
-        return redirect('study_group_detail', pk)
+        return redirect("study_groups_list_for_user")

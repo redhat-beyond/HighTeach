@@ -1,0 +1,25 @@
+{% extends 'main/loggedInPage.html' %}
+
+{% load study_group_tags %}
+{% load static %}
+
+{% block main_content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/../../static/styles/study_group_stylesheet.css' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h4 class="text-center">My Study Groups</h4>
+                {% include 'users_study_groups.html' %}
+            </div>
+
+            <div class="col border bg-light bg-light mb-4 p-3 shadow-sm border rounded">
+                <h4 class="text-center">Study Group Creation</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ create_study_group_form.as_p }}
+                    <button class="btn btn-secondary" type="submit">Create Group</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
