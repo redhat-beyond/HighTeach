@@ -163,3 +163,7 @@ class TestStudentCourse:
         with pytest.raises(ValidationError):
             student_course = StudentCourse(student_id=user_one, teacher_course_id=teacher_course_zero)
             student_course.save()
+
+    def test_get_student_courses_by_teacher(self, db, persist_course, persist_first_student_course):
+        courses = StudentCourse.objects.get_student_courses_by_teacher(persist_course.teacher_id)
+        assert persist_first_student_course in courses

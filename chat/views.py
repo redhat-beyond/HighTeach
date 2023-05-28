@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from chat.models import ChatManager, Message
+from chat.models import Message
 from chat.serializer import MessageSerializer
 from course.models import StudentCourse
 from study_group.models import StudyGroup
@@ -10,9 +10,9 @@ from rest_framework.decorators import api_view
 # Create your views here.
 def chat_view(request):
     if request.user.profile.account_type == 'S':
-        student_courses = ChatManager.get_student_contacts_list(request.user)
+        student_courses = StudentCourse.objects.get_student_courses(request.user)
     else:
-        student_courses = ChatManager.get_teacher_contacts_list(request.user)
+        student_courses = StudentCourse.get_student_courses_by_teacher(request.user)
     study_groups = StudyGroup.objects.get_groups_by_user(request.user)
     context = {
         'student_courses': student_courses,
