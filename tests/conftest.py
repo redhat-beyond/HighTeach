@@ -270,3 +270,19 @@ def persist_review_number_two(new_review_two):
 def authorized_client(client, persist_user):
     client.force_login(persist_user)
     return client
+
+
+@pytest.fixture
+def add_message_to_course_request_data(student_course0):
+    return {
+        "courseId": student_course0.student_course_id,
+        "message": "Test",
+    }
+
+
+@pytest.fixture
+def add_message_to_group_request_data(study_group0):
+    return {
+        "groupId": study_group0.study_group_id,
+        "message": "Test",
+    }

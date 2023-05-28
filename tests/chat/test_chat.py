@@ -72,17 +72,45 @@ class TestChatAPI:
         response_message_ids = [m['message_id'] for m in response.data]
 
         assert persist_message_with_student_course.message_id in response_message_ids
+        assert response.status_code == 200
 
-    def test_add_message_to_course_chat(self, client, persist_second_user, student_course0):
+    def test_get_student_course_chat_not_logged_in(self, client, student_course0, persist_message_with_student_course):
+        response = client.get(f'/chat/courses/{student_course0.student_course_id}')
+        assert response.status_code == 401
+
+    def test_get_student_course_chat_not_in_course(self, client, persist_teacher, student_course0,
+                                                   persist_message_with_student_course):
+        client.force_login(user=persist_teacher)
+        response = client.get(f'/chat/courses/{student_course0.student_course_id}')
+        assert response.status_code == 401
+
+    def test_add_message_to_course_chat(self, client, persist_second_user, student_course0,
+                                        add_message_to_course_request_data):
         chat_messages = Message.objects.get_student_course_chat(student_course0.student_course_id)
         len_messages_before_post = len(chat_messages)
         client.force_login(user=persist_second_user)
-        client.post('/chat/post-message/', {
-            "courseId": student_course0.student_course_id,
-            "message": "Test",
-        })
+        client.post('/chat/post-message/', add_message_to_course_request_data)
         chat_messages_after_post = Message.objects.get_student_course_chat(student_course0.student_course_id)
         assert len(chat_messages_after_post) == len_messages_before_post + 1
+
+    def test_add_message_to_course_chat_not_logged_in(self, client, student_course0,
+                                                      add_message_to_course_request_data):
+        chat_messages = Message.objects.get_student_course_chat(student_course0.student_course_id)
+        len_messages_before_post = len(chat_messages)
+        response = client.post('/chat/post-message/', add_message_to_course_request_data)
+        chat_messages_after_post = Message.objects.get_student_course_chat(student_course0.student_course_id)
+        assert len(chat_messages_after_post) == len_messages_before_post
+        assert response.status_code == 401
+
+    def test_add_message_to_course_chat_not_in_course(self, client, persist_teacher, student_course0,
+                                                      add_message_to_course_request_data):
+        chat_messages = Message.objects.get_student_course_chat(student_course0.student_course_id)
+        len_messages_before_post = len(chat_messages)
+        client.force_login(user=persist_teacher)
+        response = client.post('/chat/post-message/', add_message_to_course_request_data)
+        chat_messages_after_post = Message.objects.get_student_course_chat(student_course0.student_course_id)
+        assert len(chat_messages_after_post) == len_messages_before_post
+        assert response.status_code == 400
 
     def test_get_study_group_chat(self, client, persist_user, study_group0, persist_message_with_group):
         client.force_login(user=persist_user)
@@ -90,14 +118,40 @@ class TestChatAPI:
         response_message_ids = [m['message_id'] for m in response.data]
 
         assert persist_message_with_group.message_id in response_message_ids
+        assert response.status_code == 200
 
-    def test_add_message_to_group_chat(self, client, persist_user, study_group0):
+    def test_add_message_to_group_chat(self, client, persist_user, study_group0, add_message_to_group_request_data):
         chat_messages = Message.objects.get_group_chat(study_group0.study_group_id)
         len_messages_before_post = len(chat_messages)
         client.force_login(user=persist_user)
-        client.post('/chat/post-message/', {
-            "groupId": study_group0.study_group_id,
-            "message": "Test",
-        })
+        client.post('/chat/post-message/', add_message_to_group_request_data)
         chat_messages_after_post = Message.objects.get_group_chat(study_group0.study_group_id)
         assert len(chat_messages_after_post) == len_messages_before_post + 1
+
+    def test_add_message_to_group_chat_not_logged_in(self, client, study_group0, add_message_to_group_request_data):
+        chat_messages = Message.objects.get_group_chat(study_group0.study_group_id)
+        len_messages_before_post = len(chat_messages)
+        response = client.post('/chat/post-message/', add_message_to_group_request_data)
+        chat_messages_after_post = Message.objects.get_group_chat(study_group0.study_group_id)
+        assert len(chat_messages_after_post) == len_messages_before_post
+        assert response.status_code == 401
+
+    def test_add_message_to_group_chat_not_in_group(self, client, persist_second_user, study_group0,
+                                                    add_message_to_group_request_data):
+        chat_messages = Message.objects.get_group_chat(study_group0.study_group_id)
+        len_messages_before_post = len(chat_messages)
+        client.force_login(user=persist_second_user)
+        response = client.post('/chat/post-message/', add_message_to_group_request_data)
+        chat_messages_after_post = Message.objects.get_group_chat(study_group0.study_group_id)
+        assert len(chat_messages_after_post) == len_messages_before_post
+        assert response.status_code == 400
+
+    def test_get_study_group_chat_not_logged_in(self, client, study_group0, persist_message_with_group):
+        response = client.get(f'/chat/groups/{study_group0.study_group_id}')
+        assert response.status_code == 401
+
+    def test_get_study_group_chat_not_in_group(self, client, persist_second_user, study_group0,
+                                               persist_message_with_group):
+        client.force_login(user=persist_second_user)
+        response = client.get(f'/chat/groups/{study_group0.study_group_id}')
+        assert response.status_code == 401
