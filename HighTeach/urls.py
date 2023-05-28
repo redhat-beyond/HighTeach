@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homePage, name='homePage'),
     path('course/', include('course.urls')),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='main/homePage.html'), name='logout'),
     path('study-group/', include('study_group.urls')),
     path('course/', include('course.urls')),

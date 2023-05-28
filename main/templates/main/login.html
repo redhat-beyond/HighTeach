@@ -1,0 +1,46 @@
+{% extends 'base_home.html' %}
+{% block content %}
+{% load static %}
+<head>
+    <link rel="icon" href="{% static 'css/login.css' %}" >
+</head>
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="{% static '/images/login_image.png' %}" class="img-fluid" alt="Sample image">
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-4">
+        <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+            <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                <h3 class="lead fw-normal mb-0 me-3">Login</h3>
+            </div>
+
+            <div class="form-outline mb-4 mt-4">
+                <input type="text" name="username" id="username" class="form-control form-control-lg" placeholder="Enter a valid username" required />
+                <label class="form-label" for="username">Username</label>
+            </div>
+
+            <div class="form-outline mb-3">
+                <input type="password" id="form3Example4" name="password" class="form-control form-control-lg" placeholder="Enter password" required />
+                <label class="form-label" for="form3Example4">Password</label>
+            </div>
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+                <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+            </div>
+
+            </form>
+            {% if messages %}
+                <div class="alert alert-danger mt-3">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

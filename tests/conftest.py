@@ -9,6 +9,8 @@ from datetime import date
 
 USERNAME = "test1"
 PASSWORD = "PASSWORD"
+INVALID_USERNAME = "invaliduser"
+INVALID_PASSWORD = "invalidpassword"
 
 
 @pytest.fixture

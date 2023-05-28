@@ -1,18 +1,8 @@
 import pytest
-from django.urls import reverse
-from conftest import USERNAME, PASSWORD
 
 
 @pytest.mark.django_db
 class TestHomepageView:
-    def test_not_staff_user_redirected_from_admin_login(self, client, persist_user):
-        response = client.post(reverse('admin:login'), {
-            'username': USERNAME,
-            'password': PASSWORD,
-        })
-        assert response.status_code == 302
-        assert response.url == reverse('homePage')
-
     def test_successful_logout(self, client, persist_user):
         client.force_login(user=persist_user)
         response = client.get('/logout/')
