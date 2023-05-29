@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from main import views
 from django.contrib.auth import views as auth_views
+from users import views as users
 
 
 urlpatterns = [
@@ -26,4 +27,9 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='main/homePage.html'), name='logout'),
     path('study-group/', include('study_group.urls')),
     path('course/', include('course.urls')),
+    path('signup', users.index, name='profile'),
+    #path('getProfile', users.static_profile, name='getProfile'),
+    path('users/<str:slug>/',  users.ProfileDetailView.as_view(), name='profile-detail'),
+    #===========================================================================
+    path('edit-profile/', users.edit_profile, name='users-edit-profile'),
 ]
