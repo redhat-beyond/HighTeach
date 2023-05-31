@@ -23,6 +23,7 @@ def make_profile():
             first_name=f"first_name{idx}", last_name=f"last_name{idx}", email=f"email{idx}",
             city=f"city{idx}",
         )
+        profile.save()
         return profile
 
     return make
@@ -83,3 +84,18 @@ class TestProfileModel:
         make_profile(second_user_idx, second_account_type)
         profiles_by_account_type = Profile.filter_by_account_type(new_profile.account_type)
         assert sorted(list(profiles_by_account_type)) == [new_profile]
+
+    @pytest.mark.parametrize("keyword_only_relevant_for_first_profile, account_type, num_of_profiles",
+                             [("first_name0", Account_type.STUDENT, 2),
+                              ("last_name0", Account_type.STUDENT, 2),
+                              ("last_name0", Account_type.STUDENT, 2)])
+    def test_search_users_by_keyword(self, make_profile, keyword_only_relevant_for_first_profile,
+                                     account_type, num_of_profiles):
+        profile_list = [make_profile(i, account_type) for i in range(num_of_profiles)]
+        users_queryset = Profile.search_users_by_keyword(keyword_only_relevant_for_first_profile)
+
+        first_user = profile_list.pop(0).user
+        assert first_user in users_queryset
+
+        for profile in profile_list:
+            assert profile.user not in users_queryset
