@@ -3,7 +3,6 @@ from .models import Profile, Account_type
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-
 LAST_LOGIN = timezone.now()
 CREATION_DATE = timezone.now()
 USERNAME = "testuser"
@@ -88,7 +87,7 @@ class TestProfileModel:
     @pytest.mark.parametrize("keyword_only_relevant_for_first_profile, account_type, num_of_profiles",
                              [("first_name0", Account_type.STUDENT, 2),
                               ("last_name0", Account_type.STUDENT, 2),
-                              ("last_name0", Account_type.STUDENT, 2)])
+                              ("username0", Account_type.STUDENT, 2)])
     def test_search_users_by_keyword(self, make_profile, keyword_only_relevant_for_first_profile,
                                      account_type, num_of_profiles):
         profile_list = [make_profile(i, account_type) for i in range(num_of_profiles)]
@@ -99,3 +98,34 @@ class TestProfileModel:
 
         for profile in profile_list:
             assert profile.user not in users_queryset
+
+    @pytest.mark.parametrize("search_keyword", ["First_Name0", "FIRST_NAME0", "first_name0",
+                                                "Last_Name0", "LAST_NAME0", "last_name0",
+                                                "Username0", "USERNAME0", "username0"])
+    def test_search_users_case_insensitive(self, make_profile, search_keyword):
+        profile = make_profile(0, Account_type.STUDENT)
+        users_queryset = Profile.search_users_by_keyword(search_keyword)
+        assert profile.user in users_queryset
+
+    @pytest.mark.parametrize("search_keyword", ["", "f", "first", "first_name",
+                                                "last", "last_name", "last_name",
+                                                "u", "user", "username"])
+    def test_search_users_string_containment_behavior_success(self, make_profile, search_keyword):
+        profile = make_profile(0, Account_type.STUDENT)
+        users_queryset = Profile.search_users_by_keyword(search_keyword)
+        assert profile.user in users_queryset
+
+    @pytest.mark.parametrize("search_keyword", ["first ", "first_name01", "first_name ", "first_name0_",
+                                                "last ", "last_name01", "last_name ", "last_name0_",
+                                                "user ", "username01 ", "username01 ", "last_name0_"])
+    def test_search_users_string_containment_behavior_fail(self, make_profile, search_keyword):
+        profile = make_profile(0, Account_type.STUDENT)
+        users_queryset = Profile.search_users_by_keyword(search_keyword)
+        assert profile.user not in users_queryset
+
+    @pytest.mark.parametrize("search_keyword", ["usernme", "user_neme", "frst_name", "lst_name",
+                                                "lastnam", "lst"])
+    def test_search_users_typos_fail(self, make_profile, search_keyword):
+        profile = make_profile(0, Account_type.STUDENT)
+        users_queryset = Profile.search_users_by_keyword(search_keyword)
+        assert profile.user not in users_queryset

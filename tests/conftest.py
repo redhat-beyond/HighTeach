@@ -7,7 +7,6 @@ from chat.models import Message
 from feed.models import Post
 from users.models import Profile
 from datetime import date
-from users.models import Profile
 
 
 USERNAME = "test1"
