@@ -58,7 +58,7 @@
 
               <br></br>
               <label class="label">Course Description :</label>
-              <p style="display:inline">{{course.description}}</p>
+              <p style="display:inline" >{{course.description}}</p>
 
               <br></br>
               <label class="label">Category :</label>
@@ -76,7 +76,9 @@
               role="tabpanel"
               aria-labelledby="v-pills-requsets-tab"
             >
-            student content
+              {% block Messages %} 
+              {% include "student_course.html" %}
+              {% endblock %}
             </div>
             {% endif %}
           </div>
@@ -119,6 +121,10 @@
                         {% elif view == 'C' %}
                         <button type='submit' class="btn btn-primary btn-rounded btn-lg" disabled>
                           Signed-up
+                        </button>
+                        {% elif view == 'D' %}
+                        <button type='submit' class="btn btn-primary btn-rounded btn-lg" disabled>
+                          Requset Declined
                         </button>
                         {% elif course.teacher_id == user %}
                         {% else %}
@@ -288,11 +294,13 @@
           <span class="visually-hidden">Next</span>
         </button>
 
-
+        
         </div>
-      {% else %}
-          <p>No reviews available</p>
-      {% endif %}
+        {% else %}
+          <div class="col-4">
+            <p>No reviews available</p>
+          </div>
+        {% endif %}
 
     </div>
     </div>

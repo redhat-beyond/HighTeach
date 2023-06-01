@@ -83,6 +83,7 @@ class AddCourse(LoginRequiredMixin, View):
 
 class CoursePage(LoginRequiredMixin, View):
     def get(self, request, course_id):
+        joinRequests = StudentCourse.objects.get_course_students_pending_requset(course_id)
         course = TeacherCourse.objects.filter(course_id=course_id)[0]
         view = course.is_student_in_course(request.user)
         reviews = Review.objects.get_reviews_by_course(course=course_id)
@@ -92,8 +93,8 @@ class CoursePage(LoginRequiredMixin, View):
         else:
             form_view = ReviewForm()
         context = {'course': course, 'reviews': reviews, 'view': view,
-                   'form': form_view, 'review_view': review_view}
-
+                   'form': form_view, 'review_view': review_view,
+                   'joinRequests': joinRequests}
         return render(request, 'course/course_page.html', context)
 
 
@@ -103,3 +104,17 @@ class ConnectCourseToStudent(LoginRequiredMixin, View):
         studentCourse = StudentCourse(student_id=request.user, teacher_course_id=course)
         studentCourse.save()
         return redirect('/course/' + str(course_id))
+
+
+class AcceptOrDeclineStudentCourse(LoginRequiredMixin, View):
+    def post(self, request, course_id, student_course_id):
+        if 'Accept' in request.POST:
+            studentCourse = StudentCourse.objects.filter(student_course_id=student_course_id).first()
+            studentCourse.change_to_confirmed()
+            return redirect('/course/' + str(course_id))
+        elif 'Decline' in request.POST:
+            studentCourse = StudentCourse.objects.filter(student_course_id=student_course_id).first()
+            studentCourse.change_to_rejected()
+            return redirect('/course/' + str(course_id))
+        else:
+            return redirect('/course/' + str(course_id))

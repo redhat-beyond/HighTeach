@@ -1,0 +1,35 @@
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'styles/student_course.css' %}" type="text/css">
+<div class="scroll">
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>Student</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    {% for joinRequest in joinRequests %}
+      <tbody>
+          <td><a href="/course/{{course.course_id}}">{{joinRequest.student_id}}</td>
+          <td>{{joinRequest.request_date}}</td>
+          <td> 
+            <form action='{{course.course_id}}/{{joinRequest.student_course_id}}' method='POST'>
+              {% csrf_token %}
+              <button type='submit' class="Accept-button" name="Accept" value="Accept"> 
+                <div class="arrow"></div>
+              </button>
+              <button type='submit' class="Decline-button" name="Decline" value="Decline"> 
+                <div class="x small-x"></div>
+              </button>
+            </form>
+          </td>
+      </tbody>
+    {% endfor %}
+</table>
+</div>
+
+
+{% endblock %}
