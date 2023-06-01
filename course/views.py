@@ -9,10 +9,18 @@ from .forms import TeacherCourseForm
 
 class CourseList(LoginRequiredMixin, View):
     def get(self, request):
-        courses = TeacherCourse.objects.get_teacher_courses(request.user)
-        courses |= TeacherCourse.objects.get_student_approved_teacher_courses(request.user)
-        context = {'courses': courses}
-        return render(request, 'course/courses.html', context)
+        if request.user.profile.account_type == 'B':
+            teacherCourse = TeacherCourse.objects.get_teacher_courses(request.user)
+            studentCourse = TeacherCourse.objects.get_student_approved_teacher_courses(request.user)
+            context = {'teacher_courses': teacherCourse, 'student_courses': studentCourse}
+            return render(request, 'course/courses_two_tables.html', context)
+        else:
+            if request.user.profile.account_type == 'T':
+                courses = TeacherCourse.objects.get_teacher_courses(request.user)
+            if request.user.profile.account_type == 'S':
+                courses = TeacherCourse.objects.get_student_approved_teacher_courses(request.user)
+            context = {'courses': courses}
+            return render(request, 'course/courses_table.html', context)
 
 
 class CreateReviewView(LoginRequiredMixin, CreateView):

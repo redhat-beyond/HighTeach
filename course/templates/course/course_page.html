@@ -4,17 +4,6 @@
 
   <head>
       <title>Course</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-      <meta http-equiv="x-ua-compatible" content="ie=edge" />
-      <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon" />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
-      />
       <link rel="stylesheet" href="{% static 'styles/mdb.min.css' %}" />
       <link rel="stylesheet" href="{% static 'styles/course.page.css' %}" type="text/css">
   </head>
@@ -38,26 +27,19 @@
               aria-selected="true"
               >Course Info</a
             >
+
+            {% if course.teacher_id == user %}
             <a
               class="nav-link"
-              id="v-pills-profile-tab"
+              id="v-pills-requsets-tab"
               data-mdb-toggle="pill"
-              href="#v-pills-profile"
+              href="#v-pills-requsets"
               role="tab"
-              aria-controls="v-pills-profile"
+              aria-controls="v-pills-requsets"
               aria-selected="false"
-              >Feed</a
+              >Requsets to join</a
             >
-            <a
-              class="nav-link"
-              id="v-pills-messages-tab"
-              data-mdb-toggle="pill"
-              href="#v-pills-messages"
-              role="tab"
-              aria-controls="v-pills-messages"
-              aria-selected="false"
-              >Messages</a
-            >
+            {% endif %}
           </div>
         </div>
 
@@ -75,9 +57,9 @@
 
               <br></br>
               <label class="label">Course Description :</label>
-              <br></br>
-              <p>{{course.description}}</p>
+              <p style="display:inline">{{course.description}}</p>
 
+              <br></br>
               <label class="label">Category :</label>
               <p style="display:inline">{{course.get_category_display}}</p>
 
@@ -85,24 +67,17 @@
               <label class="label">Difficulty Level :</label>
               <p style="display:inline">{{course.get_difficulty_level_display}}</p>
             </div>
+
+            {% if course.teacher_id == user %}
             <div
               class="tab-pane fade"
-              id="v-pills-profile"
+              id="v-pills-requsets"
               role="tabpanel"
-              aria-labelledby="v-pills-profile-tab"
+              aria-labelledby="v-pills-requsets-tab"
             >
-              Feed content
-              {% block Feed %} {% endblock %}
+            student content
             </div>
-            <div
-              class="tab-pane fade"
-              id="v-pills-messages"
-              role="tabpanel"
-              aria-labelledby="v-pills-messages-tab"
-            >
-              Messages content
-              {% block Messages %} {% endblock %}
-            </div>
+            {% endif %}
           </div>
         </div>
 
@@ -111,8 +86,15 @@
                   <div class="card" style="border-radius: 15px;">
                     <div class="card-body text-center">
                       <div class="mt-3 mb-4">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
-                          class="rounded-circle img-fluid" style="width: 100px;" />
+                        <div class="image">
+                          {% if user.profile.image %}
+                              <img src="{{ user.profile.image }}" alt="Profile Picture" 
+                              class="rounded-circle img-fluid" style="width: 100px;">
+                          {% else %}
+                              <img src="{% static 'images/blank_profile.png' %}" alt="Profile Picture" 
+                              class="rounded-circle img-fluid" style="width: 100px;">
+                          {% endif %}
+                        </div>
                       </div>
                       <h4 class="mb-2"><a href="/teacher">{{course.teacher_id}}</a></h4>
                       <p class="text-muted mb-4">@{{course.teacher_id.profile.profession}} </p>

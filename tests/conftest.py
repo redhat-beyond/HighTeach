@@ -6,6 +6,8 @@ from course.models import StudentCourse, TeacherCourse, Review
 from chat.models import Message
 from feed.models import Post
 from datetime import date
+from users.models import Profile
+
 
 USERNAME = "test1"
 PASSWORD = "PASSWORD"
@@ -288,3 +290,31 @@ def add_message_to_group_request_data(study_group0):
         "groupId": study_group0.study_group_id,
         "message": "Test",
     }
+
+
+@pytest.fixture
+def persist_profile_teacher_and_student(persist_user):
+    profile = Profile(user=persist_user, account_type='B',
+                      meeting_method='L')
+    profile.save()
+    return profile
+
+
+@pytest.fixture
+def persist_profile_teacher(persist_user):
+    profile = Profile(user=persist_user, account_type='T',
+                      meeting_method='L')
+    profile.save()
+    return profile
+
+
+@pytest.fixture
+def authorized_client_teacher(client, persist_profile_teacher):
+    client.force_login(persist_profile_teacher.user)
+    return client
+
+
+@pytest.fixture
+def authorized_client_teacher_and_student(client, persist_profile_teacher_and_student):
+    client.force_login(persist_profile_teacher_and_student.user)
+    return client
