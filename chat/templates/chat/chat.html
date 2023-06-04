@@ -1,0 +1,68 @@
+{% extends 'main/loggedInPage.html' %}
+{% block main_content %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    var staticPhotosFolder = "{% static "images/" %}";
+    var currentUserID = {{request.user.id}};
+    var csrf_token = '{{ csrf_token }}';
+</script>
+<script src="{% static 'styles/js/chat.js' %}"></script>
+<div class="row">
+  <div class="col-md-4">
+    <section class="discussions">
+    <div class="discussion search">
+      <div class="searchbar">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <input type="text" placeholder="Search..."></input>
+      </div>
+    </div>
+    {% for course in student_courses %}
+    <div class="discussion" onclick="loadChat({{course.student_course_id}}, '{{course.teacher_course_id}}', 'course')">
+      <div class="photo" style="background-image: url({% static 'images/blank_profile.png' %});">
+        <div class="online"></div>
+      </div>
+      <div class="desc-contact">
+        <p class="name">{{course.teacher_course_id}}</p>
+        {% if user.profile.account_type == 'S' %}
+        <p class="message">{{course.teacher_course_id.teacher_id.first_name}} {{course.teacher_course_id.teacher_id.last_name}}</p>
+        {% endif %}
+        {% if user.profile.account_type == 'T' %}
+        <p class="message">{{course.student_id.first_name}} {{course.student_id.last_name}}</p>
+        {% endif %}
+      </div>
+      <div class="timer">1 week</div>
+    </div>
+    {% endfor %}
+    {% for group in study_groups %}
+    <div class="discussion" onclick="loadChat({{group.study_group_id}}, '{{group.field}}', 'study_group')">
+      <div class="photo" style="background-image: url({% static 'images/blank_profile.png' %});">
+        <div class="online"></div>
+      </div>
+      <div class="desc-contact">
+        <p class="name">{{group.field}}</p>
+        <p class="message">Study Group</p>
+      </div>
+      <div class="timer">1 week</div>
+    </div>
+    {% endfor %}
+  </section>
+  </div>
+  <div class="col-md-8">
+    <section class="chat">
+        <div class="header-chat">
+          <i class="icon fa fa-user-o" aria-hidden="true"></i>
+          <p id="selected-chat-name" class="name"></p>
+          <i class="icon clickable fa fa-ellipsis-h right" aria-hidden="true"></i>
+        </div>
+        <div id="messages-chat" class="messages-chat">
+        </div>
+        <div class="footer-chat">
+          <i class="icon fa fa-smile-o clickable" style="font-size:25pt;" aria-hidden="true"></i>
+          <input id="chatTextBox" type="text" class="write-message" placeholder="Type your message here"></input>
+          <i class="icon send fa fa-paper-plane-o clickable" aria-hidden="true" onclick="sendMessage()"></i>
+        </div>
+      </section>
+  </div>
+</div>
+{% endblock %}

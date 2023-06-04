@@ -124,8 +124,20 @@ def message_with_group(persist_user, study_group0):
 
 
 @pytest.fixture
+def persist_message_with_group(message_with_group):
+    message_with_group.save()
+    return message_with_group
+
+
+@pytest.fixture
 def message_with_student_course(persist_user, student_course0):
     return Message(sender=persist_user, student_course=student_course0, message=_TEST_MESSAGE)
+
+
+@pytest.fixture
+def persist_message_with_student_course(message_with_student_course):
+    message_with_student_course.save()
+    return message_with_student_course
 
 
 @pytest.fixture
@@ -260,3 +272,19 @@ def persist_review_number_two(new_review_two):
 def authorized_client(client, persist_user):
     client.force_login(persist_user)
     return client
+
+
+@pytest.fixture
+def add_message_to_course_request_data(student_course0):
+    return {
+        "courseId": student_course0.student_course_id,
+        "message": "Test",
+    }
+
+
+@pytest.fixture
+def add_message_to_group_request_data(study_group0):
+    return {
+        "groupId": study_group0.study_group_id,
+        "message": "Test",
+    }
