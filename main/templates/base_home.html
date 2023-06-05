@@ -33,7 +33,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <form action="/search/" method="GET" class="input-group rounded search-container">
+                <form action="{%  url "search" %}" method="GET" class="input-group rounded search-container">
                   <input type="search" class="form-control rounded search-input" placeholder="Search"
                          value="{{ request.GET.q }}" aria-label="Search" aria-describedby="search-addon" name="q" />
                   <button type="submit" class="input-group-text border-0" id="search-addon">
