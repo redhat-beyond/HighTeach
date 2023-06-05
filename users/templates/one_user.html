@@ -1,0 +1,25 @@
+{% load static %}
+{% block content %}
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/user_list.css' %}">
+    <div class="item d-flex align-items-center border rounded bg-white">
+            <div class="image">
+                {% if user.profile.image %}
+                    <img src="{{ user.profile.image }}" alt="Profile Picture" class="img-fluid rounded-circle">
+                {% else %}
+                    <img src="{% static "images/blank_profile.png" %}" alt="Profile Picture" class="img-fluid rounded-circle">
+                {% endif %}
+            </div>
+            <div class="text">
+                <a href="#"><h3 class="h5">{{ user.get_username }}</h3></a>
+                <small>{{ user.get_full_name}}</small>
+            </div>
+        <div class="item">
+            {% if user.profile.account_type == 'T' or user.profile.account_type == 'B' %}
+                <span class="badge rounded-pill bg-success"><i class="bi bi-lightbulb"></i>Teacher</span>
+            {% endif %}
+            {% if user.profile.account_type == 'S' or  user.profile.account_type == 'B' %}
+            <span class="badge rounded-pill bg-success"><i class="bi bi-pencil-fill"></i>Student</span>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
