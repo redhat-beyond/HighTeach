@@ -9,10 +9,11 @@
             <div class="profile-card">
                 {% if user.profile.image %}
                 <img src="{{ user.profile.image.url }}" alt="user" class="profile-photo">
+                <h5><a href="/users/{{user.username}}/" class="text-white">{{user.username}}</a></h5>
                 {% else %}
                 <img src="{% static 'images/blank_profile.png' %}" alt="user" class="profile-photo">
+                <h5><a href="/users/{{user.username}}/" class="text-white">{{user.username}}</a></h5>
                 {% endif %}
-                <h5><a href="#" class="text-white">{{user.username}}</a></h5>
             {% if user.profile.account_type == 'S' %}
               <div class="text-white">Private Account</div>
             {% endif %}
