@@ -106,6 +106,9 @@ class TeacherCourse(models.Model):
             return 'P'
         return 'N'
 
+    def get_pending_requset_count_for_course(self):
+        return StudentCourse.objects.get_course_students_pending_requset(self).count()
+
     def avg_rating_for_course(self):
         avg = Review.objects.get_avg_rating_by_course(self)
         if avg is None:
@@ -170,6 +173,9 @@ class StudentCourseManager(models.Manager):
 
     def get_student_courses_by_teacher(self, teacher_id: User):
         return self.filter(teacher_course_id__teacher_id=teacher_id)
+
+    def get_course_students_pending_requset(self, course: TeacherCourse):
+        return self.filter(teacher_course_id=course, status=Status.PENDING)
 
 
 class Status(models.TextChoices):

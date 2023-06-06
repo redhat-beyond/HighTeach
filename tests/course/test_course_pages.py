@@ -19,34 +19,34 @@ def teacher_course_zero(persist_user):
     return teacher_course
 
 
-@pytest.fixture
-def authorized_client(client, persist_user):
-    client.force_login(persist_user)
-    return client
-
-
 @pytest.mark.django_db
 class TestCourseTableView:
 
-    def test_courses_list_authorized(self, authorized_client):
-        course_response = authorized_client.get('/course/')
+    def test_courses_list_authorized_student_or_teacher(self, authorized_client_teacher):
+        course_response = authorized_client_teacher.get('/course/')
         assert course_response.status_code == 200
-        assert 'courses.html' in course_response.templates[0].name
+        assert 'courses_table.html' in course_response.templates[0].name
+
+    def test_courses_list_authorized_student_and_teacher(self, authorized_client_teacher_and_student):
+        course_response = authorized_client_teacher_and_student.get('/course/')
+        assert course_response.status_code == 200
+        assert 'courses_two_tables.html' in course_response.templates[0].name
 
     def test_courses_list_unauthorized(self, client):
         course_response = client.get('/course/')
         assert course_response.status_code == 302
 
-    def test_show_course_that_user_teaches(self, authorized_client, teacher_course_zero):
-        response = authorized_client.get(reverse('show_courses'))
+    def test_show_course_that_user_teaches(self, authorized_client_teacher, teacher_course_zero):
+        response = authorized_client_teacher.get(reverse('show_courses'))
         assert response.status_code == 200
         courses_ids = [course.pk for course in response.context['courses']]
         assert teacher_course_zero.course_id in courses_ids
 
-    def test_show_course_that_user_enrolled_in(self, authorized_client, persist_first_student_course):
-        response = authorized_client.get(reverse('show_courses'))
+    def test_show_course_that_user_enrolled_in(self, authorized_client_teacher_and_student,
+                                               persist_first_student_course):
+        response = authorized_client_teacher_and_student.get(reverse('show_courses'))
         assert response.status_code == 200
-        courses_ids = [course.pk for course in response.context['courses']]
+        courses_ids = [course.pk for course in response.context['student_courses']]
         assert persist_first_student_course.student_course_id in courses_ids
 
 
@@ -62,14 +62,14 @@ class TestAddCourseView:
         course_response = client.get('/course/add')
         assert course_response.status_code == 302
 
-    def test_add_course(self, authorized_client):
+    def test_add_course(self, authorized_client_teacher):
         teacher_course = {"course_name": COURSE_NAME, "description": DESCRIPTION,
                           "difficulty_level": DIFFICULTY, "category": CATEGORY,
                           "price": PRICE, "years_of_experience": YEARS_OF_EXP}
         assert not TeacherCourse.objects.filter(**teacher_course).exists()
-        course_creation_response = authorized_client.post("/course/add", teacher_course, follow=True)
+        course_creation_response = authorized_client_teacher.post("/course/add", teacher_course, follow=True)
         assert course_creation_response.status_code == 200
-        assert 'courses.html' in course_creation_response.templates[0].name
+        assert 'courses_table.html' in course_creation_response.templates[0].name
         assert TeacherCourse.objects.filter(**teacher_course).exists()
 
 

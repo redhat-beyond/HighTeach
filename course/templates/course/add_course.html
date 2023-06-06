@@ -14,12 +14,12 @@
                     <div class="card-body bg-light">
                         <div class="container">
                             <div class="col-md-10">
-                                <h1>Course Form</h1>
+                                <h1>Add Course</h1>
                                 <br>
                                 <form action="" method="post">
                                     <table>
                                         {% csrf_token %}
-                                        {{form.as_table}}
+                                        {{form}}
                                     </table>
                                     <br>
                                     <input type="submit" value="Submit" class="btn btn-success">
@@ -28,6 +28,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-lg-6 mx-auto">
+            <img src="{% static 'images/teacher.jpg'%}" alt="teacher" class="teacher-image">
             </div>
         </div>
     </body>

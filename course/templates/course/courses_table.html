@@ -1,0 +1,53 @@
+{% extends 'main/loggedInPage.html' %}
+{% block main_content %}
+{% load static %}
+    <head>
+        <title>Course</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'styles/courses.table.css' %}" type="text/css">
+    </head>
+
+    <body>
+        <h1 class="Course_list">My Courses</h1>
+        <br><br>
+        <div class="scroll">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Course Name</th>
+                        {% if user.profile.account_type == 'S'%}
+                        <th>Teacher</th>
+                        {% endif %}
+                        <th>Price</th>
+                        <th>Category</th>
+                        {% if user.profile.account_type == 'T'%}
+                        <th>Request</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                {% for course in courses %}
+                <tbody>
+                    <td><a href="/course/{{course.course_id}}">{{course.course_name.capitalize}}</td>
+                    {% if user.profile.account_type == 'S'%}
+                        <td><a href="#">{{course.teacher_id}}</td>
+                    {% endif %}
+                    <td>{{course.price}} ₪</td>
+                    <td>{{course.get_category_display.capitalize}}</td>
+                    {% if user.profile.account_type == 'T'%}
+                    <td>{{course.get_pending_requset_count_for_course}}</td>
+                    {% endif %}
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+        {% if user.profile.account_type == 'T'%}
+        <a href="add">
+            <button class="icon-btn add-btn">
+                <div class="add-icon"></div>
+                <div class="btn-txt">Add Course</div>
+            </button>
+        </a>
+        {% endif %}
+    </body>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'main/loggedInPage.html' %}
+{% block main_content %}
+{% load static %}
+    <head>
+        <title>Course</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{% static 'styles/courses.table.css' %}" type="text/css">
+    </head>
+
+    <body>
+        <container>
+        <h1 class="Course_list">My Courses</h1>
+        <br>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Course Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Request</th>
+                </tr>
+            </thead>
+            {% for course in teacher_courses %}
+            <tbody>
+                <td><a href="/course/{{course.course_id}}">{{course.course_name.capitalize}}</td>
+                <td>{{course.price}} ₪</td>
+                <td>{{course.get_category_display.capitalize}}</td>
+                <td>{{course.get_pending_requset_count_for_course}}</td>
+            </tbody>
+            {% endfor %}
+        </table>
+        <a href="add">
+            <button class="icon-btn add-btn">
+                <div class="add-icon"></div>
+                <div class="btn-txt">Add Course</div>
+            </button>
+        </a>
+        </container>
+        <br><br><br>
+        <container>
+            <h1 class="Course_list">Student Course</h1>
+            <br>
+            <div class="scroll">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Teacher</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    {% for course in student_courses %}
+                    <tbody>
+                        <td><a href="/course/{{course.course_id}}">{{course.course_name.capitalize}}</td>
+                        <td><a href="#">{{course.teacher_id}}</td>
+                        <td>{{course.price}} ₪</td>
+                        <td>{{course.get_category_display.capitalize}}</td>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            </container>
+    </body>
+
+{% endblock %}

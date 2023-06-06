@@ -1,3 +1,27 @@
 table th {
     padding: 10px;
 }
+
+.card {
+    border-radius: 30px;
+    background: #e0e0e0;
+    box-shadow: 15px 15px 30px #bebebe,
+               -15px -15px 30px #ffffff;
+  }
+
+h1 {
+    color: #2E8B57;
+    font-weight: 600;
+    letter-spacing: -1px;
+    text-align: center;
+    padding-left: 100px;
+}
+
+.teacher-image{
+padding-top: 80px;
+padding-right: 50px;
+float:right;
+width:700px;
+height:700px;
+}
+

@@ -1,0 +1,70 @@
+
+.Accept-button {
+  width: 2em;
+  height: 2em;
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em;
+  border: 0px solid transparent;
+  background-color: limegreen;
+  border-radius: 1.5em;
+  transition: all 0.2s linear;
+ }
+
+ .Accept-button:hover {
+  box-shadow: 3.4px 2.5px 4.9px rgba(0, 0, 0, 0.025),
+   8.6px 6.3px 12.4px rgba(0, 0, 0, 0.035),
+   17.5px 12.8px 25.3px rgba(0, 0, 0, 0.045),
+   36.1px 26.3px 52.2px rgba(0, 0, 0, 0.055),
+   99px 72px 143px rgba(0, 0, 0, 0.08);
+ }
+
+ .arrow {
+  padding-bottom: 10px;
+  left: 0.96em;
+  top: 0.7em;
+  width: 0.5em;
+  height: 0.75em;
+  border: solid white;
+  border-width: 0 0.2em 0.2em 0;
+  box-shadow: 0.1em 0.1em 0em 0 rgba(0,0,0,0.3);
+  transform: rotate(45deg);
+}
+
+ .Decline-button {
+  width: 2em;
+  height: 2em;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  border: 0px solid transparent;
+  background-color: #ff0000;
+  border-radius: 1.5em;
+  transition: all 0.2s linear;
+ }
+
+ .x{
+  margin-bottom: 3px;
+  content: "\274c";
+  font-size: 25px;
+  color: #fff;
+  line-height: 50px;
+  text-align: center;
+}
+
+.small-x:after {
+content: "\d7";
+}
+
+ .Decline-button:hover {
+  box-shadow: 3.4px 2.5px 4.9px rgba(0, 0, 0, 0.025),
+   8.6px 6.3px 12.4px rgba(0, 0, 0, 0.035),
+   17.5px 12.8px 25.3px rgba(0, 0, 0, 0.045),
+   36.1px 26.3px 52.2px rgba(0, 0, 0, 0.055),
+   99px 72px 143px rgba(0, 0, 0, 0.08);
+ }
+
+
