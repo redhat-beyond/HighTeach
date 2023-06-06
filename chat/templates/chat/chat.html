@@ -19,7 +19,13 @@
     </div>
     {% for course in student_courses %}
     <div class="discussion" onclick="loadChat({{course.student_course_id}}, '{{course.teacher_course_id}}', 'course')">
+      {% if user.profile.account_type == 'S' and course.teacher_course_id.teacher_id.profile.image %}
+      <div class="photo" style="background-image: url({{course.teacher_course_id.teacher_id.profile.image.url}});">
+      {% elif user.profile.account_type == 'T' and course.student_id.profile.image %}
+      <div class="photo" style="background-image: url({{course.student_id.profile.image.url}});">
+      {% else %}
       <div class="photo" style="background-image: url({% static 'images/blank_profile.png' %});">
+      {% endif %}
         <div class="online"></div>
       </div>
       <div class="desc-contact">
@@ -36,7 +42,7 @@
     {% endfor %}
     {% for group in study_groups %}
     <div class="discussion" onclick="loadChat({{group.study_group_id}}, '{{group.field}}', 'study_group')">
-      <div class="photo" style="background-image: url({% static 'images/blank_profile.png' %});">
+      <div class="photo" style="background-image: url({% static 'images/group_image.jpg' %});">
         <div class="online"></div>
       </div>
       <div class="desc-contact">

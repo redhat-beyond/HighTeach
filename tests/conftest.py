@@ -5,6 +5,7 @@ from study_group.models import StudyGroup
 from course.models import StudentCourse, TeacherCourse, Review
 from chat.models import Message
 from feed.models import Post
+from users.models import Profile
 from datetime import date
 
 USERNAME = "test1"
@@ -39,6 +40,20 @@ def new_second_user():
 def persist_user(new_user):
     new_user.save()
     return new_user
+
+
+@pytest.fixture
+def persist_user_profile(persist_user):
+    profile = Profile.objects.create(user=persist_user)
+    profile.save()
+    return profile
+
+
+@pytest.fixture
+def persist_second_user_profile(persist_second_user):
+    profile = Profile.objects.create(user=persist_second_user)
+    profile.save()
+    return profile
 
 
 @pytest.fixture

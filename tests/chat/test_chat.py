@@ -65,9 +65,9 @@ class TestChatManager:
 
 @pytest.mark.django_db
 class TestChatAPI:
-    def test_get_student_course_chat(self, client, persist_second_user, student_course0,
-                                     persist_message_with_student_course):
-        client.force_login(user=persist_second_user)
+    def test_get_student_course_chat(self, client, persist_user_profile,
+                                     persist_second_user_profile, student_course0, persist_message_with_student_course):
+        client.force_login(user=persist_second_user_profile.user)
         response = client.get(f'/chat/courses/{student_course0.student_course_id}')
         response_message_ids = [m['message_id'] for m in response.data]
 
@@ -112,8 +112,8 @@ class TestChatAPI:
         assert len(chat_messages_after_post) == len_messages_before_post
         assert response.status_code == 400
 
-    def test_get_study_group_chat(self, client, persist_user, study_group0, persist_message_with_group):
-        client.force_login(user=persist_user)
+    def test_get_study_group_chat(self, client, persist_user_profile, study_group0, persist_message_with_group):
+        client.force_login(user=persist_user_profile.user)
         response = client.get(f'/chat/groups/{study_group0.study_group_id}')
         response_message_ids = [m['message_id'] for m in response.data]
 
