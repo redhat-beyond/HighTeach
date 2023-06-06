@@ -1,0 +1,89 @@
+body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f2f2f2;
+      }
+
+      .container {
+        width: 80%;
+        max-width: 600px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+      }
+
+      .newfrm {
+        margin-bottom: 20px;
+      }
+
+      .newmsg {
+        color: #555;
+        font-weight: bold;
+      }
+
+      form {
+        margin-top: 10px;
+      }
+
+      .message {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f7f7f7;
+      }
+
+      .author {
+        color: #777;
+        font-size: 12px;
+      }
+
+      .reply {
+        color: #888;
+        font-size: 12px;
+      }
+
+      .EOM {
+        color: #aaa;
+        font-size: 14px;
+        margin-top: 20px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 4px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .post-id {
+        color: #555;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+
+      .post-content {
+        color: #333;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .reply-content {
+        color: #444;
+        font-size: 14px;
+        margin-bottom: 6px;
+}

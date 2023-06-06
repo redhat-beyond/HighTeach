@@ -18,7 +18,6 @@ from django.urls import path, include
 from main import views
 from django.contrib.auth import views as auth_views
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homePage, name='homePage'),
@@ -27,5 +26,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='main/homePage.html'), name='logout'),
     path('study-group/', include('study_group.urls')),
     path('course/', include('course.urls')),
+    path('feed/', include('feed.urls')),
     path('chat/', include('chat.urls')),
 ]
