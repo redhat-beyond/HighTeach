@@ -13,6 +13,7 @@ function loadChat(course_id, course_name, course_type) {
   }
   $.get(target_url, function(response_data, status){
     var finalHtml = "";
+    var lastSender = -1;
     for (const message_id in response_data) {
       message = response_data[message_id];
       if (message.sender == currentUserID) {
@@ -25,13 +26,28 @@ function loadChat(course_id, course_name, course_type) {
         `;
       }
       else {
-        finalHtml += `
-          <div class="message text-only">
-            <div class="photo" style="background-image: url(${staticPhotosFolder}/blank_profile.png);"></div>
-            <p class="text">${message.message}</p>
-          </div>
-        `;
-      }
+        if (lastSender != message.sender) {
+            displayImageUrl = `${staticPhotosFolder}/blank_profile.png`;
+            if (message.user_image_url) {
+                displayImageUrl = message.user_image_url;
+            }
+            finalHtml += `
+              <div class="message text-only">
+                <div class="photo" style="background-image: url(${displayImageUrl});"></div>
+                <p class="text">${message.message}</p>
+              </div>
+            `;
+          }
+          else {
+            finalHtml += `
+                <div class="message text-only">
+                  <div style="width: 45px; display: block;"></div>
+                  <p class="text">${message.message}</p>
+                </div>
+              `;
+          }
+        }
+      lastSender = message.sender;
     }
     document.getElementById("selected-chat-name").innerHTML = course_name;
     document.getElementById("messages-chat").innerHTML = finalHtml;

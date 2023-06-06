@@ -13,7 +13,7 @@ def chat_view(request):
     if request.user.profile.account_type == 'S':
         student_courses = StudentCourse.objects.get_student_courses(request.user)
     else:
-        student_courses = StudentCourse.get_student_courses_by_teacher(request.user)
+        student_courses = StudentCourse.objects.get_student_courses_by_teacher(request.user)
     study_groups = StudyGroup.objects.get_groups_by_user(request.user)
     context = {
         'student_courses': student_courses,
