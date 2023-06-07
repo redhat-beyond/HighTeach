@@ -5,8 +5,8 @@ from study_group.models import StudyGroup
 from course.models import StudentCourse, TeacherCourse, Review
 from chat.models import Message
 from feed.models import Post
-from datetime import date
 from users.models import Profile
+from datetime import date
 
 
 USERNAME = "test1"
@@ -323,8 +323,22 @@ def persist_profile_teacher(persist_user):
 
 
 @pytest.fixture
+def persist_profile_student(persist_user):
+    profile = Profile(user=persist_user, account_type='S',
+                      meeting_method='L')
+    profile.save()
+    return profile
+
+
+@pytest.fixture
 def authorized_client_teacher(client, persist_profile_teacher):
     client.force_login(persist_profile_teacher.user)
+    return client
+
+
+@pytest.fixture
+def authorized_client_student(client, persist_profile_student):
+    client.force_login(persist_profile_student.user)
     return client
 
 

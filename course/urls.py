@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CourseList, AddCourse, CoursePage, ConnectCourseToStudent
+from .views import CourseList, AddCourse, CoursePage, ConnectCourseToStudent, AcceptOrDeclineStudentCourse
 from course import views
 
 
@@ -11,4 +11,6 @@ urlpatterns = [
     path('add', AddCourse.as_view(), name="add_course"),
     path('<int:course_id>', CoursePage.as_view(), name="coursePage"),
     path('<int:course_id>/connect', ConnectCourseToStudent.as_view(), name="connect"),
+    path('<int:course_id>/<int:student_course_id>', AcceptOrDeclineStudentCourse.as_view(),
+         name="accept_decline_request"),
 ]
