@@ -5,7 +5,6 @@ from study_group.models import StudyGroup
 from course.models import StudentCourse, TeacherCourse, Review
 from chat.models import Message
 from feed.models import Post
-from users.models import Profile
 from datetime import date
 from users.models import Profile
 
@@ -332,4 +331,10 @@ def authorized_client_teacher(client, persist_profile_teacher):
 @pytest.fixture
 def authorized_client_teacher_and_student(client, persist_profile_teacher_and_student):
     client.force_login(persist_profile_teacher_and_student.user)
+    return client
+
+
+@pytest.fixture
+def authorized_second_client(client, persist_second_user):
+    client.force_login(persist_second_user)
     return client

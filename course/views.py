@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from course.models import Review, TeacherCourse, StudentCourse
 from course.forms import ReviewForm
 from django.contrib import messages
@@ -24,55 +24,48 @@ class CourseList(LoginRequiredMixin, View):
 
 
 class CreateReviewView(LoginRequiredMixin, CreateView):
-    def get(self, request, course_id):
-        form_view = ReviewForm()
-        return render(request, 'course/create_review.html', {'form': form_view, 'course_id': course_id})
-
     def post(self, request, course_id):
         form = ReviewForm(request.POST)
         if form.is_valid():
             course = TeacherCourse.objects.filter(course_id=course_id)[0]
             rating = request.POST.get('rating')
             content = request.POST.get('content')
-            review = Review(student=request.user,  course=course, rating=rating, content=content)
+            review = Review(student=request.user, course=course, rating=rating, content=content)
             review.save()
-            return redirect(reverse('reviews', args=[course_id]))
+            return redirect('/course/' + str(course_id))
         else:
             messages.error(request, "You must enter rating")
-            return render(request, 'course/create_review.html', {'form': form, 'course_id': course_id})
-
-
-class ShowReviews(LoginRequiredMixin, View):
-    def get(self, request, course_id):
-        reviews = Review.objects.get_reviews_by_course(course_id)
-        if reviews:
-            return render(request, "course/reviews_by_course.html", {'reviews_by_course': reviews})
-        else:
-            return render(request, "course/reviews_by_course.html", {'reviews_by_course': []})
+            return redirect('/course/' + str(course_id))
 
 
 class UpdateReviewView(LoginRequiredMixin, UpdateView):
     model = Review
-    context_object_name = 'reviews'
-    template_name = "course/create_review.html"
+    context_object_name = 'coursePage'
+    template_name = "course/course_page.html"
     fields = ['rating', 'content']
 
-    def get_success_url(self):
-        return reverse('reviews', kwargs={'course_id': self.object.course_id})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['course_id'] = self.object.course_id
-        return context
+    def post(self, request, course_id):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            rating = request.POST.get('rating')
+            content = request.POST.get('content')
+            existed_review = Review.objects.get_review_in_course_by_student(student=request.user, course=course_id)
+            existed_review.rating = rating
+            existed_review.content = content
+            existed_review.save()
+            return redirect('/course/' + str(course_id))
 
 
 class DeleteReviewView(LoginRequiredMixin, DeleteView):
     model = Review
-    context_object_name = 'reviews'
-    template_name = "course/reviews_by_course.html"
+    context_object_name = 'coursePage'
+    template_name = "course/course_page.html"
 
-    def get_success_url(self):
-        return reverse('reviews', kwargs={'course_id': self.object.course_id})
+    def post(self, request, course_id):
+        review = Review.objects.get_review_in_course_by_student(request.user, course_id)
+        if review:
+            review.delete()
+        return redirect('/course/' + str(course_id))
 
 
 class AddCourse(LoginRequiredMixin, View):
@@ -93,7 +86,14 @@ class CoursePage(LoginRequiredMixin, View):
         course = TeacherCourse.objects.filter(course_id=course_id)[0]
         view = course.is_student_in_course(request.user)
         reviews = Review.objects.get_reviews_by_course(course=course_id)
-        context = {'course': course, 'reviews': reviews, 'view': view}
+        review_view = Review.objects.check_if_review_exist_by_student(request.user, course)
+        if review_view:
+            form_view = ReviewForm(instance=review_view)
+        else:
+            form_view = ReviewForm()
+        context = {'course': course, 'reviews': reviews, 'view': view,
+                   'form': form_view, 'review_view': review_view}
+
         return render(request, 'course/course_page.html', context)
 
 

@@ -6,6 +6,7 @@
       <title>Course</title>
       <link rel="stylesheet" href="{% static 'styles/mdb.min.css' %}" />
       <link rel="stylesheet" href="{% static 'styles/course.page.css' %}" type="text/css">
+      <link rel="stylesheet" type="text/css" href="{% static 'styles/style_review.css' %}">
   </head>
 
   <body>
@@ -160,11 +161,78 @@
         <br><br>
         <h7> Avrage Rating : {{course.avg_rating_for_course}} / 5</h7>
         <br><br>
-        <button type='submit' class="btn btn-primary btn-rounded btn-lg" disabled>
-          Add Review
-        </button>
-
+        {% if user != course.teacher_id %}
+            {% if review_view %}
+                    <button type="button" class="btn btn-primary btn-rounded btn-lg" onclick="toggleReviewForm()">Update Review</button>
+                <br><br>
+                <form action='{{course.course_id}}/delete_review' method="POST">
+                {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-rounded btn-lg">Delete Review</button>
+                </form>
+            {% else %}
+                    <button type="button" class="btn btn-primary btn-rounded btn-lg" onclick="toggleReviewForm()">Add Review</button>
+            {% endif %}
+        {% endif %}
       </div>
+
+    {% if  messages%}
+        <div id="reviewFormContainer" class="col-5">
+    {% else %}
+        <div id="reviewFormContainer" class="col-5" style="display: none;">
+    {% endif %}
+        <div class="col-5">
+        {% if review_view %}
+            <form action="{{course.course_id}}/update_review" method="post">
+        {% else %}
+            <form action="{{course.course_id}}/add_review" method="post">
+        {% endif %}
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_rating">Rating:</label>
+                    <div class="star-rating">
+                    {% if form.rating.value %}
+                        {% with form.rating.value|add:'0' as rating_value %}
+                        {% for i in "54321" %}
+                            {% if rating_value|stringformat:"s" == i %}
+                                <input type="radio" name="{{ form.rating.name }}" id="rating-{{ i }}" value="{{ i }}" checked>
+                            {% else %}
+                                <input type="radio" name="{{ form.rating.name }}" id="rating-{{ i }}" value="{{ i }}">
+                            {% endif %}
+                            <label for="rating-{{ i }}">&#9733;</label>
+                        {% endfor %}
+                        {% endwith %}
+                    {% else %}
+                        {% for i in "54321" %}
+                            <input type="radio" name="{{ form.rating.name }}" id="rating-{{ i }}" value="{{ i }}">
+                            <label for="rating-{{ i }}">&#9733;</label>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="id_content" class="col-md-1.5 col-form-label">Content:</label>
+                    <div class="col-md-10">
+                        {{ form.content }}
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 30px;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </div>
+                    </div>
+                </div>
+                {% if messages %}
+                    <div class="alert alert-danger mt-3">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+      </div>
+
       {% if reviews%}
       <div class="col-4">
         <div id="carouselExampleControls" class="carousel slide text-center carousel-dark" data-mdb-ride="carousel">
@@ -219,17 +287,28 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
+
+
         </div>
-      </div>
+      {% else %}
+          <p>No reviews available</p>
+      {% endif %}
+
+    </div>
     </div>
   </div>
-
-  {% else %}
-  {% endif %}
-
-  </body>
     <script type="text/javascript" src="{% static 'styles/js/mdb.min.js' %}"></script>
     <script type="text/javascript"></script>
+    <script>
+    function toggleReviewForm() {
+        var reviewFormContainer = document.getElementById("reviewFormContainer");
+        if (reviewFormContainer.style.display === "none") {
+            reviewFormContainer.style.display = "block";
+        } else {
+            reviewFormContainer.style.display = "none";
+        }
+    }
+    </script>
+  </body>
 </html>
-
 {% endblock %}

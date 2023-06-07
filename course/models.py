@@ -125,16 +125,27 @@ class TeacherCourse(models.Model):
 
 class ReviewManager(models.Manager):
 
-    def get_reviews_by_course(self, course: int):
+    def get_reviews_by_course(self, course: TeacherCourse):
         reviews = Review.objects.filter(course=course)
         return reviews
 
-    def get_avg_rating_by_course(self, course: int):
+    def get_avg_rating_by_course(self, course: TeacherCourse):
         avg_rating = self.filter(course=course).aggregate(models.Avg('rating'))['rating__avg']
         return avg_rating
 
-    def get_number_of_review_of_course(self, course):
+    def get_number_of_review_of_course(self, course: TeacherCourse):
         return len(self.filter(course=course))
+
+    def check_if_review_exist_by_student(self, student: User, course: TeacherCourse):
+        reviews_by_course = self.get_reviews_by_course(course)
+        try:
+            return reviews_by_course.get(student=student)
+        except Review.DoesNotExist:
+            return None
+
+    def get_review_in_course_by_student(self, student: User, course: TeacherCourse):
+        reviews_by_course = self.get_reviews_by_course(course)
+        return reviews_by_course.get(student=student)
 
 
 class Review(models.Model):
