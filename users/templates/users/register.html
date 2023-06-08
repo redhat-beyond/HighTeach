@@ -1,0 +1,92 @@
+{% extends 'base_home.html' %}
+
+{% block content %}
+{% load static %}
+
+<section class="vh-200" style="background-color: #eee;">
+  <div class="container h-200">
+    <div class="row d-flex justify-content-center align-items-center h-200">
+      <div class="col-lg-15 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-20 col-lg-10 col-xl-10 order-2 order-lg-1">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+
+                <form class="mx-1 mx-md-4" method="post" enctype="multipart/form-data">
+
+                  {% if user_form.errors %}
+                    {% for error in user_form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                  {% for error in user_form.non_field_errors %}
+                      <div class="alert alert-danger">
+                          <strong>{{ error|escape }}</strong>
+                      </div>
+                  {% endfor %}
+                  {% endif %}
+
+                  {% if profile_form.errors %}
+                    {% for error in profile_form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                  {% for error in profile_form.non_field_errors %}
+                      <div class="alert alert-danger">
+                          <strong>{{ error|escape }}</strong>
+                      </div>
+                  {% endfor %}
+                  {% endif %}
+
+                  {% csrf_token %}
+
+                  {{ user_form.as_p }}
+
+                  {% for field in profile_form %}
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      {% if field.name == 'bio' %}
+                      <i class="fas fa-info-circle fa-lg me-3 fa-fw"></i>
+                      {% elif field.name == 'account_type' %}
+                      <i class="fas fa-briefcase fa-lg me-3 fa-fw"></i> 
+                      {% elif field.name == 'phone_number' %}
+                      <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+                      {% elif field.name == 'city' %}
+                      <i class="fas fa-map-marker-alt fa-lg me-3 fa-fw"></i>
+                      {% elif field.name == 'meeting_method' %}
+                      <i class="fas fa-shield-alt fa-lg me-3 fa-fw"></i>
+                      {% elif field.name == 'image' %}
+                      <i class="fas fa-images fa-lg me-3 fa-fw"></i>
+                      {% endif %}
+                      {{ field }}
+                    </div>
+                  {% endfor %}
+
+                  <div class="form-check d-flex justify-content-center mb-5">
+                    <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
+                    <label class="form-check-label" for="form2Example3">
+                      I agree all statements in <a href="#!">Terms of service</a>
+                    </label>
+                  </div>
+
+                  <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                    <button type="submit" class="btn btn-primary btn-lg" >Register</button>
+                  </div>
+
+                </form>
+              </div>
+              <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                  class="img-fluid" alt="Sample image">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

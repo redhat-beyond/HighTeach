@@ -1,0 +1,37 @@
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'styles/one_course.css' %}">
+
+  <div id="one_course">
+    <a href="/course/{{course.course_id}}">
+      <div class="col-4">
+        <div class="card">
+          <div class="card-body">
+                <h4>{{ course.course_name }}</h4>
+                <br>
+                <p class="card-text">Difficulty : {{ course.get_difficulty_level_display }}</p>
+                <p class="card-text">Meetings : {{ course.teacher_id.profile.get_meeting_method_display }}</p>
+                <p class="card-text">Price : {{ course.price }} ₪</p>
+
+                {% if course.avg_rating_for_course != 0 %}
+                <ul class="list-unstyled d-flex justify-content-center text-warning mb-0">
+                  {% with course.avg_rating_for_course|floatformat:"0" as stars %}
+                  {% with ''|center:stars as range %}
+                  {% for i in range %}
+                  <li><i class="fas fa-star fa-sm"></i></li>
+                  {% endfor %}
+                  {% endwith %}
+                  {% endwith %}
+                  <p>{{course.avg_rating_for_course}}</p>
+                </ul>
+                {% else %}
+                  <p>No reviews</p>
+                {% endif %}
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+{% endblock %}

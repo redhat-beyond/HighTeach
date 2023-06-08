@@ -19,6 +19,8 @@ from main import views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from users import views as users
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +32,8 @@ urlpatterns = [
     path('course/', include('course.urls')),
     path('feed/', include('feed.urls')),
     path('chat/', include('chat.urls')),
-    path('main/', include('main.urls'))
+    path('register/', users.register, name='signup'),
+    path('users/', include('users.urls')),
+    path('main/', include('main.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

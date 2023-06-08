@@ -1,9 +1,8 @@
-
-
 #one_course .card {
     box-sizing: border-box;
     width: 250px;
     height: 254px;
+    margin-right: 20px;
     background: rgba(238, 238, 238, 0.62);
     border: 1px solid white;
     box-shadow: 6px 6px 5px rgba(0, 0, 0, 0.22);
@@ -36,3 +35,27 @@
 #one_course h5 {
     color: #2E8B57;
   }
+
+.scroll {
+  height: 420px;
+
+  width: 100%;
+
+  overflow: auto;
+  overflow: overlay;
+}
+  
+.scroll::-webkit-scrollbar{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.scroll::-webkit-scrollbar-thumb{
+  border-radius: .5rem;
+  background-color: #0004;
+  visibility: hidden;
+}
+
+.scroll:hover::-webkit-scrollbar-thumb{ 
+  visibility: visible;
+}
