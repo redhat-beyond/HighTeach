@@ -323,12 +323,32 @@ def persist_profile_teacher(persist_user):
 
 
 @pytest.fixture
+def persist_profile_student(persist_user):
+    profile = Profile(user=persist_user, account_type='S',
+                      meeting_method='L')
+    profile.save()
+    return profile
+
+
+@pytest.fixture
 def authorized_client_teacher(client, persist_profile_teacher):
     client.force_login(persist_profile_teacher.user)
     return client
 
 
 @pytest.fixture
+def authorized_client_student(client, persist_profile_student):
+    client.force_login(persist_profile_student.user)
+    return client
+
+
+@pytest.fixture
 def authorized_client_teacher_and_student(client, persist_profile_teacher_and_student):
     client.force_login(persist_profile_teacher_and_student.user)
+    return client
+
+
+@pytest.fixture
+def authorized_second_client(client, persist_second_user):
+    client.force_login(persist_second_user)
     return client

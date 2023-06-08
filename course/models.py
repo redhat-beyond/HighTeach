@@ -104,6 +104,8 @@ class TeacherCourse(models.Model):
             return 'C'
         if StudentCourse.objects.is_student_requset_pending(self, student):
             return 'P'
+        if StudentCourse.objects.is_student_request_declined(self, student):
+            return 'D'
         return 'N'
 
     def get_pending_requset_count_for_course(self):
@@ -125,16 +127,27 @@ class TeacherCourse(models.Model):
 
 class ReviewManager(models.Manager):
 
-    def get_reviews_by_course(self, course: int):
+    def get_reviews_by_course(self, course: TeacherCourse):
         reviews = Review.objects.filter(course=course)
         return reviews
 
-    def get_avg_rating_by_course(self, course: int):
+    def get_avg_rating_by_course(self, course: TeacherCourse):
         avg_rating = self.filter(course=course).aggregate(models.Avg('rating'))['rating__avg']
         return avg_rating
 
-    def get_number_of_review_of_course(self, course):
+    def get_number_of_review_of_course(self, course: TeacherCourse):
         return len(self.filter(course=course))
+
+    def check_if_review_exist_by_student(self, student: User, course: TeacherCourse):
+        reviews_by_course = self.get_reviews_by_course(course)
+        try:
+            return reviews_by_course.get(student=student)
+        except Review.DoesNotExist:
+            return None
+
+    def get_review_in_course_by_student(self, student: User, course: TeacherCourse):
+        reviews_by_course = self.get_reviews_by_course(course)
+        return reviews_by_course.get(student=student)
 
 
 class Review(models.Model):
@@ -162,6 +175,9 @@ class StudentCourseManager(models.Manager):
     def get_student_confirmed(self, id: User):
         return self.filter(student_id=id, status=Status.CONFIRMED)
 
+    def is_student_request_declined(self, course: TeacherCourse, student: User):
+        return bool(self.filter(teacher_course_id=course, student_id=student, status=Status.REJECTED))
+
     def is_student_enrolled_in_course(self, course: TeacherCourse, student: User):
         return bool(self.filter(teacher_course_id=course, student_id=student, status=Status.CONFIRMED))
 
@@ -181,6 +197,7 @@ class StudentCourseManager(models.Manager):
 class Status(models.TextChoices):
     PENDING = 'Pending'
     CONFIRMED = 'Confirmed'
+    REJECTED = 'Rejected'
 
 
 class StudentCourse(models.Model):
@@ -198,6 +215,10 @@ class StudentCourse(models.Model):
 
     def change_to_confirmed(self):
         self.status = Status.CONFIRMED.value
+        self.save()
+
+    def change_to_rejected(self):
+        self.status = Status.REJECTED.value
         self.save()
 
     def clean(self):

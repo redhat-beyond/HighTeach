@@ -2,7 +2,6 @@
 .Accept-button {
   width: 2em;
   height: 2em;
-  /* display: flex; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -68,3 +67,26 @@ content: "\d7";
  }
 
 
+ .scroll {
+  height: 420px;
+
+  width: 100%;
+
+  overflow: auto;
+  overflow: overlay;
+}
+
+.scroll::-webkit-scrollbar{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.scroll::-webkit-scrollbar-thumb{
+  border-radius: .5rem;
+  background-color: #0004;
+  visibility: hidden;
+}
+
+.scroll:hover::-webkit-scrollbar-thumb{ 
+  visibility: visible;
+}

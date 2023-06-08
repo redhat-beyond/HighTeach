@@ -34,5 +34,6 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('register/', users.register, name='signup'),
     path('users/', include('users.urls')),
+    path('main/', include('main.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
